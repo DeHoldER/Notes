@@ -4,45 +4,60 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
     private boolean isLandscape;
     private FragmentManager fragmentManager;
 
+    private Note lastOpenedNote;
+    private static final String KEY_LAST_NOTE = "KEY_LAST_NOTE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (savedInstanceState != null) {
+            lastOpenedNote = savedInstanceState.getParcelable(KEY_LAST_NOTE);
+        }
+
         fragmentManager = getSupportFragmentManager();
 
-        // Ставим флаг в зависимости от ориентации
         isLandscape = getResources()
                 .getConfiguration()
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
 
-        Fragment currentPortraitFragment = fragmentManager
-                .findFragmentById(R.id.fragment_container);
-        Fragment currentLandscapeFragment = fragmentManager
-                .findFragmentById(R.id.detail_container);
+        Fragment fragmentContainer = fragmentManager.findFragmentById(R.id.fragment_container);
 
         if (!isLandscape) {
-
-            if (currentPortraitFragment == null) {
+            if (lastOpenedNote != null) {
+                if (fragmentContainer instanceof NoteDetailsFragment) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, new NoteListFragment())
+                            .commit();
+                }
                 fragmentManager.beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .replace(R.id.fragment_container, NoteDetailsFragment.newInstance(lastOpenedNote))
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                fragmentManager.beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .replace(R.id.fragment_container, new NoteListFragment())
                         .commit();
             }
         } else {
-
-            if (currentLandscapeFragment != null) {
+            if (lastOpenedNote != null) {
                 fragmentManager.beginTransaction()
                         .replace(R.id.list_container, new NoteListFragment())
-                        .replace(R.id.detail_container, currentLandscapeFragment)
+                        .replace(R.id.detail_container, NoteDetailsFragment.newInstance(lastOpenedNote))
                         .commit();
             } else {
                 fragmentManager.beginTransaction()
@@ -50,22 +65,19 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                         .commit();
             }
         }
+    }
 
-
-//        if (isLandscape) {
-//            Note emptyNote = new Note("Заглушка", "wflwef wefm wemf wep fmwepf p");
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.detail_container, NoteDetailsFragment.newInstance(emptyNote))
-//                    .replace(R.id.fragment_container, new NoteListFragment())
-//                    .commit();
-//        }
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_LAST_NOTE, lastOpenedNote);
     }
 
     @Override
     public void onNoteClicked(Note note) {
-        Fragment detailsFragment = NoteDetailsFragment.newInstance(note);
+        lastOpenedNote = note;
 
+        NoteDetailsFragment detailsFragment = NoteDetailsFragment.newInstance(note);
         if (!isLandscape) {
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, detailsFragment)
@@ -74,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         } else {
             fragmentManager.beginTransaction()
                     .replace(R.id.list_container, new NoteListFragment())
-                    .replace(R.id.detail_container, NoteDetailsFragment.newInstance(note))
+                    .replace(R.id.detail_container, detailsFragment)
                     .commit();
         }
     }

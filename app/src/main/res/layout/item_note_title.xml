@@ -7,6 +7,7 @@
     android:orientation="horizontal">
 
     <ImageView
+        android:contentDescription="@string/category_ico"
         android:id="@+id/image"
         android:layout_width="@dimen/pic_size"
         android:layout_height="@dimen/pic_size"
@@ -20,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_note_item"
-        android:textSize="@dimen/note_text_size"
+        android:textSize="@dimen/note_title_text_size"
         app:layout_constraintBottom_toBottomOf="@+id/image"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toTopOf="@+id/image"

@@ -11,8 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
 
@@ -57,12 +55,12 @@ public class NoteListFragment extends Fragment {
         List<Note> noteList = new NotesRepository().getNoteList();
         LinearLayout noteListView = (LinearLayout) view;
 
-    // В этом цикле создаём элементы View, заполняем заголовки, и добавляем на экран.
-    // Кроме того, создаём обработку касания на элемент
+        // В этом цикле создаём элементы View, заполняем заголовки, и добавляем на экран.
+        // Кроме того, создаём обработку касания на элемент
         for (Note note : noteList) {
 
             View noteView = LayoutInflater.from(requireContext())
-                    .inflate(R.layout.item_note, noteListView, false);
+                    .inflate(R.layout.item_note_title, noteListView, false);
 
             TextView noteTitle = noteView.findViewById(R.id.note_title);
             noteTitle.setText(note.getTitle());
@@ -70,16 +68,6 @@ public class NoteListFragment extends Fragment {
             noteView.setOnClickListener(v -> showNoteDetails(note));
 
             noteListView.addView(noteView);
-
-//            Note note = noteList.get(i);
-//            TextView textView = new TextView(getContext());
-//            textView.setText(note.getTitle());
-//            textView.setTextSize(20);
-//            textView.setHeight(100);
-//            layoutView.addView(textView);
-//            textView.setOnClickListener(v -> {
-//                showNoteDetails(note);
-//            });
 
         }
     }
@@ -90,14 +78,6 @@ public class NoteListFragment extends Fragment {
             onNoteClicked.onNoteClicked(note);
         }
 
-//        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction
-//                .replace(R.id.fragment_container, NoteDetailsFragment.newInstance(note))
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//                .addToBackStack("1")
-//
-//                .commit();
     }
 
 }
