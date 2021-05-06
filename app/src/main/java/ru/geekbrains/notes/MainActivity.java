@@ -77,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     public void onNoteClicked(Note note) {
         lastOpenedNote = note;
 
+        for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+            fragmentManager.popBackStack();
+        }
+
         NoteDetailsFragment detailsFragment = NoteDetailsFragment.newInstance(note);
         if (!isLandscape) {
             fragmentManager.beginTransaction()
