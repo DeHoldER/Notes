@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 }
 
 
+
 /*
 
 1. Создайте класс данных со структурой заметок: название заметки, описание заметки, дата
