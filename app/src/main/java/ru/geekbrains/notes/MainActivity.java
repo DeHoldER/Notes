@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
