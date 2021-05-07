@@ -1,13 +1,16 @@
 package ru.geekbrains.notes;
 
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.content.res.Configuration;
-import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
@@ -32,6 +35,34 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                 .getConfiguration()
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
 
+        loadList();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.action_settings) {
+                    Toast.makeText(MainActivity.this,"Settings clicked" , Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.action_sorting) {
+                    Toast.makeText(MainActivity.this,"Sorting clicked" , Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.action_search) {
+                    Toast.makeText(MainActivity.this,"Search clicked" , Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+    }
+
+    private void loadList() {
         Fragment fragmentContainer = fragmentManager.findFragmentById(R.id.fragment_container);
 
         if (!isLandscape) {
@@ -76,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     public void onNoteClicked(Note note) {
         lastOpenedNote = note;
 
-        for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
 
