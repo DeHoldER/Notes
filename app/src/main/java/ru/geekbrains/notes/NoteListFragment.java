@@ -3,10 +3,13 @@ package ru.geekbrains.notes;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,7 +50,37 @@ public class NoteListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         initList(view);
+
+
+    }
+
+    private void initPopupMenu(View view, Note note) {
+        view.setOnLongClickListener((View.OnLongClickListener) v -> {
+            PopupMenu popupMenu = new PopupMenu(requireContext(), v);
+
+            requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (item.getItemId() == R.id.action_do_something) {
+                        Toast.makeText(requireContext(), "Do something with " + note.getTitle(), Toast.LENGTH_SHORT).show();
+                    }
+                    if (item.getItemId() == R.id.action_delete_note) {
+                        Toast.makeText(requireContext(), "Delete note " + note.getTitle(), Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });
+            popupMenu.show();
+            return true;
+
+
+        });
+
+
     }
 
     // создаём список заметок на экране из массива
@@ -62,10 +95,12 @@ public class NoteListFragment extends Fragment {
             View noteView = LayoutInflater.from(requireContext())
                     .inflate(R.layout.item_note_title, noteListView, false);
 
+
             TextView noteTitle = noteView.findViewById(R.id.note_title);
             noteTitle.setText(note.getTitle());
 
             noteView.setOnClickListener(v -> showNoteDetails(note));
+            initPopupMenu(noteView, note);
 
             noteListView.addView(noteView);
 
