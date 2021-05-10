@@ -3,10 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:title="Item 1"
-        android:id="@+id/item_1"/>
+        android:title="@string/settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:id="@+id/action_settings"/>
 
     <item
-        android:title="Item 2"
-        android:id="@+id/item_2"/>
+        android:title="@string/about"
+        android:icon="@drawable/ic_baseline_library_books_24"
+        android:id="@+id/action_about"/>
 </menu>

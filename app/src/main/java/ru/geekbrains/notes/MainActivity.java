@@ -2,15 +2,21 @@ package ru.geekbrains.notes;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.telecom.Call;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
@@ -39,27 +45,74 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
+        initDrawer(toolbar);
+
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_settings) {
-                    Toast.makeText(MainActivity.this,"Settings clicked" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 if (item.getItemId() == R.id.action_sorting) {
-                    Toast.makeText(MainActivity.this,"Sorting clicked" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Sorting clicked", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 if (item.getItemId() == R.id.action_search) {
-                    Toast.makeText(MainActivity.this,"Search clicked" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Search clicked", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
             }
         });
 
+    }
+
+    private void initDrawer(Toolbar toolbar) {
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        // Обработка навигационного меню
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if (navigateFragment(id)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                    return true;
+                }
+                return false;
+            }
+
+
+        });
+    }
+
+    private boolean navigateFragment(int id) {
+                NoteDetailsFragment detailsFragment1 = NoteDetailsFragment.newInstance(new Note("Settings","Заглушка для настроек"));
+                NoteDetailsFragment detailsFragment2 = NoteDetailsFragment.newInstance(new Note("About","Заглушка о приложении"));
+        switch (id) {
+            case R.id.action_settings:
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, detailsFragment1)
+                            .addToBackStack(null)
+                            .commit();
+                return true;
+            case R.id.action_about:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, detailsFragment2)
+                        .addToBackStack(null)
+                        .commit();
+                return true;
+        }
+        return false;
     }
 
     private void loadList() {
