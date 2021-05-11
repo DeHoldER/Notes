@@ -96,20 +96,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     private boolean navigateFragment(int id) {
-                NoteDetailsFragment detailsFragment1 = NoteDetailsFragment.newInstance(new Note("Settings","Заглушка для настроек"));
-                NoteDetailsFragment detailsFragment2 = NoteDetailsFragment.newInstance(new Note("About","Заглушка о приложении"));
+        NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("Settings", "Заглушка для настроек"));
         switch (id) {
             case R.id.action_settings:
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, detailsFragment1)
-                            .addToBackStack(null)
-                            .commit();
+                addFragment(settingsPlugFragment);
                 return true;
             case R.id.action_about:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, detailsFragment2)
-                        .addToBackStack(null)
-                        .commit();
+                addFragment(new AboutFragment());
                 return true;
         }
         return false;
@@ -159,21 +152,23 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     @Override
     public void onNoteClicked(Note note) {
         lastOpenedNote = note;
+        NoteDetailsFragment detailsFragment = NoteDetailsFragment.newInstance(note);
+        addFragment(detailsFragment);
+    }
 
+    public void addFragment(Fragment fragment) {
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
 
-        NoteDetailsFragment detailsFragment = NoteDetailsFragment.newInstance(note);
         if (!isLandscape) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, detailsFragment)
+                    .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
         } else {
             fragmentManager.beginTransaction()
-                    .replace(R.id.list_container, new NoteListFragment())
-                    .replace(R.id.detail_container, detailsFragment)
+                    .replace(R.id.detail_container, fragment)
                     .commit();
         }
     }

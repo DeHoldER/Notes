@@ -8,5 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="dark_grey">#212121</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="color_toolbar">#FF6A6A</color>
+    <color name="color_toolbar">@drawable/side_nav_bar</color>
 </resources>
