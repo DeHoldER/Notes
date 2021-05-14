@@ -31,6 +31,14 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        initFields(savedInstanceState);
+        loadList();
+        initDrawer();
+
+    }
+
+    private void initFields(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             lastOpenedNote = savedInstanceState.getParcelable(KEY_LAST_NOTE);
         }
@@ -40,13 +48,32 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         isLandscape = getResources()
                 .getConfiguration()
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
 
-        loadList();
-
+    private void initDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
-        initDrawer(toolbar);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
+        // Обработка навигационного меню
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if (navigateFragment(id)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                    return true;
+                }
+                return false;
+            }
+        });
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -68,31 +95,6 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             }
         });
 
-    }
-
-    private void initDrawer(Toolbar toolbar) {
-        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        // Обработка навигационного меню
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                if (navigateFragment(id)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                    return true;
-                }
-                return false;
-            }
-
-
-        });
     }
 
     private boolean navigateFragment(int id) {
@@ -178,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
 /*
 
-1. Подумайте о функционале вашего приложения заметок. Какие экраны там могут быть, помимо
+0. Подумайте о функционале вашего приложения заметок. Какие экраны там могут быть, помимо
 основного со списком заметок? Как можно использовать меню и всплывающее меню в вашем
 приложении? Не обязательно сразу пытаться реализовать весь этот функционал, достаточно
 создать макеты и структуру, а реализацию пока заменить на заглушки или всплывающие
@@ -189,11 +191,11 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 поиска по заметкам и сортировка. В меню «Заметки» у вас есть иконки «Переслать» (или
 «Поделиться»), «Добавить ссылку или фотографию к заметке».
 
-2. Создайте боковое навигационное меню для своего приложения и добавьте туда хотя бы один
-экран, например «Настройки» или «О приложении».
-
-3. * Создайте полноценный заголовок для NavigationDrawer’а. К примеру, аватарка пользователя,
-его имя и какая-то дополнительная информация.
+1. Создайте список ваших заметок.
+2. Создайте карточку для элемента списка.
+3. Класс данных, созданный на шестом уроке, используйте для заполнения карточки списка.
+4. * Создайте фрагмент для редактирования данных в конкретной карточке. Этот фрагмент пока
+можно вызвать через основное меню.
 
 4. * Разберитесь, как можно сделать, и сделайте корректировку даты создания при помощи
 DatePicker.
