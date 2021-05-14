@@ -14,8 +14,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+
+import ru.geekbrains.notes.domain.Note;
+import ru.geekbrains.notes.ui.NoteListAdapter;
 
 public class NoteListFragment extends Fragment {
 
@@ -43,7 +48,23 @@ public class NoteListFragment extends Fragment {
     // При создании фрагмента укажем его макет
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_note_list, container, false);
+//        return inflater.inflate(R.layout.fragment_note_list, container, false);
+
+        View view = inflater.inflate(R.layout.note_list_recycler_view, container, false);
+
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view;
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        NoteListAdapter adapter = new NoteListAdapter();
+        recyclerView.setAdapter(adapter);
+
+        List<Note> dataList = new NotesRepo().getNoteList();
+
+        recyclerView.setAdapter(adapter);
+        adapter.addData(dataList);
+        adapter.notifyDataSetChanged();
+
+        return view;
     }
 
     // вызывается после создания макета фрагмента, здесь мы проинициализируем список
@@ -51,8 +72,7 @@ public class NoteListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initList(view);
-
+//        initList(view);
 
     }
 
@@ -85,7 +105,7 @@ public class NoteListFragment extends Fragment {
 
     // создаём список заметок на экране из массива
     private void initList(View view) {
-        List<Note> noteList = new NotesRepository().getNoteList();
+        List<Note> noteList = new NotesRepo().getNoteList();
         LinearLayout noteListView = (LinearLayout) view;
 
         // В этом цикле создаём элементы View, заполняем заголовки, и добавляем на экран.

@@ -1,8 +1,7 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes.ui;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -15,10 +14,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ru.geekbrains.notes.AboutFragment;
+import ru.geekbrains.notes.domain.Note;
+import ru.geekbrains.notes.NoteDetailsFragment;
+import ru.geekbrains.notes.NoteListFragment;
+import ru.geekbrains.notes.R;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
@@ -28,16 +34,37 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private Note lastOpenedNote;
     private static final String KEY_LAST_NOTE = "KEY_LAST_NOTE";
 
+    private List<String> dataList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dataList = new ArrayList<>();
+        addDataTOList();
+
         initFields(savedInstanceState);
         loadList();
         initDrawer();
-        
+
+//        RecyclerView noteList = findViewById(R.id.note_list_recycler);
+//
+//        NoteListAdapter adapter = new NoteListAdapter();
+//        noteList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+//
+//        noteList.setAdapter(adapter);
+//        adapter.addData(dataList);
+//        adapter.notifyDataSetChanged();
+
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_LAST_NOTE, lastOpenedNote);
+    }
+
 
     private void initFields(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -99,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     private boolean navigateFragment(int id) {
-        NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("Settings", "Заглушка для настроек"));
+        NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("id1","Settings", "Заглушка для настроек"));
         switch (id) {
             case R.id.action_settings:
                 addFragment(settingsPlugFragment);
@@ -147,12 +174,6 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(KEY_LAST_NOTE, lastOpenedNote);
-    }
-
-    @Override
     public void onNoteClicked(Note note) {
         lastOpenedNote = note;
         NoteDetailsFragment detailsFragment = NoteDetailsFragment.newInstance(note);
@@ -174,6 +195,24 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                     .replace(R.id.detail_container, fragment)
                     .commit();
         }
+    }
+
+    private void addDataTOList() {
+        dataList.add("ASDAS DASOI DJIAS ODJAS JIOASD");
+        dataList.add("ASDAS DASOI DJIAS ODJAS JIOASD asdqasd qas");
+        dataList.add("ASDAS DASOI DJIAS OD");
+        dataList.add("ASDAS DASOI DJIAS ODasdasdasdasd");
+        dataList.add("ASDAS DA");
+        dataList.add("ASDAS DAa dosp jda oisdja iodj");
+        dataList.add("ASDAS DAa dosp jda oisdja iodjasdij asiopjd iasj ");
+        dataList.add("ASDAS DAa dosp jda oisdja iodj");
+        dataList.add("ASDAS DAa dosp jda oisdja iodjdsifojwioe jfoiwej iojweo if");
+        dataList.add("asfj dasiojf dais lanslf nlasn f");
+        dataList.add("asfj dasiojf dais lanslf nlasn ff iowefj iowej fjweiof ");
+        dataList.add("asfj dasiojf dais lanslf nlasn ff iowefj iowej fjweiof  iejifo jesiof joie ");
+        dataList.add("alfj la law oifn iwif aw");
+        dataList.add("alfj la law oifn iwif aweoifj ioqwj oqiw");
+        dataList.add("alfj la law oifn iwif aweoifj ioqwj oqiw oqwio dqw ");
     }
 }
 

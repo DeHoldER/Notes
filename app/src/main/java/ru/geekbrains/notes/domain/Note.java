@@ -1,4 +1,4 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes.domain;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,12 +9,31 @@ public class Note implements Parcelable {
 
     private String title;
     private String text;
+    private String id;
     private Date date;
+    private int color;
 
-    public Note(String title, String text) {
+    public static final int COLOR_WHITE = 0;
+    public static final int COLOR_GREEN = 1;
+    public static final int COLOR_RED = 2;
+    public static final int COLOR_BLUE = 3;
+    public static final int COLOR_YELLOW = 4;
+    public static final int COLOR_PURPLE = 5;
+
+    public Note(String id, String title, String text) {
+        this.id = id;
         this.title = title;
         this.text = text;
         this.date = new Date();
+        this.color = 0;
+    }
+
+    public Note(String id, String title, String text, int color) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.date = new Date();
+        this.color = color;
     }
 
     protected Note(Parcel in) {
@@ -67,5 +86,13 @@ public class Note implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(text);
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }
