@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     private boolean navigateFragment(int id) {
-        NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("id1","Settings", "Заглушка для настроек"));
+        NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("id1", "Settings", "Заглушка для настроек"));
         switch (id) {
             case R.id.action_settings:
                 addFragment(settingsPlugFragment);
