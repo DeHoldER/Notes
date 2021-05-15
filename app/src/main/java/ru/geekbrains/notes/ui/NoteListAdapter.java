@@ -16,6 +16,8 @@ import ru.geekbrains.notes.domain.Note;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyViewHolder> {
 
+    private OnItemClickListener itemClickListener; // Слушатель будет устанавливаться извне
+
     private final ArrayList<Note> data = new ArrayList<>();
 
     public void addData(List<Note> toAdd) {
@@ -46,8 +48,27 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            title = itemView.findViewById(R.id.item_note);
 
-            title = itemView.findViewById(R.id.item_title);
+            // Обработчик нажатий на этом ViewHolder
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (itemClickListener != null) {
+                        itemClickListener.onItemClick(v, getAdapterPosition());
+                    }
+                }
+            });
         }
+    }
+
+    // Сеттер слушателя нажатий
+    public void SetOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    // Интерфейс для обработки нажатий, как в ListView
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }

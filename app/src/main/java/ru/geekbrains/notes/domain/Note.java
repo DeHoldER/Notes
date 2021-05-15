@@ -77,6 +77,10 @@ public class Note implements Parcelable {
         this.date = date;
     }
 
+    public Note getNote() {
+        return this;
+    }
+
     @Override
     public int describeContents() {
         return 0;

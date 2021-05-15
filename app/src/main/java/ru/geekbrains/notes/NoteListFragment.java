@@ -64,6 +64,14 @@ public class NoteListFragment extends Fragment {
         adapter.addData(dataList);
         adapter.notifyDataSetChanged();
 
+        // Установим слушателя
+        adapter.SetOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                showNoteDetails(dataList.get(position).getNote());
+            }
+        });
+
         return view;
     }
 

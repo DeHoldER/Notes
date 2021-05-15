@@ -34,15 +34,11 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private Note lastOpenedNote;
     private static final String KEY_LAST_NOTE = "KEY_LAST_NOTE";
 
-    private List<String> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dataList = new ArrayList<>();
-        addDataTOList();
 
         initFields(savedInstanceState);
         loadList();
@@ -195,24 +191,6 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                     .replace(R.id.detail_container, fragment)
                     .commit();
         }
-    }
-
-    private void addDataTOList() {
-        dataList.add("ASDAS DASOI DJIAS ODJAS JIOASD");
-        dataList.add("ASDAS DASOI DJIAS ODJAS JIOASD asdqasd qas");
-        dataList.add("ASDAS DASOI DJIAS OD");
-        dataList.add("ASDAS DASOI DJIAS ODasdasdasdasd");
-        dataList.add("ASDAS DA");
-        dataList.add("ASDAS DAa dosp jda oisdja iodj");
-        dataList.add("ASDAS DAa dosp jda oisdja iodjasdij asiopjd iasj ");
-        dataList.add("ASDAS DAa dosp jda oisdja iodj");
-        dataList.add("ASDAS DAa dosp jda oisdja iodjdsifojwioe jfoiwej iojweo if");
-        dataList.add("asfj dasiojf dais lanslf nlasn f");
-        dataList.add("asfj dasiojf dais lanslf nlasn ff iowefj iowej fjweiof ");
-        dataList.add("asfj dasiojf dais lanslf nlasn ff iowefj iowej fjweiof  iejifo jesiof joie ");
-        dataList.add("alfj la law oifn iwif aw");
-        dataList.add("alfj la law oifn iwif aweoifj ioqwj oqiw");
-        dataList.add("alfj la law oifn iwif aweoifj ioqwj oqiw oqwio dqw ");
     }
 }
 
