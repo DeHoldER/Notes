@@ -12,7 +12,7 @@
         android:layout_margin="@dimen/margin_note_item"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/presence_online" />
+        app:srcCompat="@drawable/ic_color_green" />
 
     <TextView
         android:id="@+id/item_note"
