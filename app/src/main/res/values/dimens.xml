@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="pic_size">22dp</dimen>
-    <dimen name="margin_note_item">12dp</dimen>
+    <dimen name="pic_size">30dp</dimen>
+    <dimen name="margin_note_item">10dp</dimen>
+    <dimen name="margin_card_view">6dp</dimen>
     <dimen name="note_title_text_size">20sp</dimen>
+    <dimen name="note_text_preview_size">17sp</dimen>
+    <dimen name="note_text_frame_height">38dp</dimen>
     <dimen name="note_detail_margin">10dp</dimen>
     <dimen name="note_title_detail_text_size">22sp</dimen>
     <dimen name="note_date_text_size">14sp</dimen>
-    <dimen name="note_text_size">16sp</dimen>
+    <dimen name="note_text_size">18sp</dimen>
     <dimen name="nav_header_height">200dp</dimen>
     <dimen name="nav_header_dimen">24sp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>

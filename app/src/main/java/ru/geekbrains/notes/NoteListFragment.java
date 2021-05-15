@@ -59,6 +59,7 @@ public class NoteListFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
         adapter.addData(dataList);
+        adapter.setResources(getResources());
         adapter.notifyDataSetChanged();
 
         // Установим слушателя
@@ -117,7 +118,7 @@ public class NoteListFragment extends Fragment {
         for (Note note : noteList) {
 
             View noteView = LayoutInflater.from(requireContext())
-                    .inflate(R.layout.item_note_title, noteListView, false);
+                    .inflate(R.layout.item_note_title_deprecated, noteListView, false);
 
 
             TextView noteTitle = noteView.findViewById(R.id.note_title);

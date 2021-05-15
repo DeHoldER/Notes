@@ -1,8 +1,13 @@
 package ru.geekbrains.notes;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.loader.ResourcesProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,12 +18,18 @@ import java.util.List;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyViewHolder> {
 
+    private Resources resources;
+
     private OnItemClickListener itemClickListener; // Слушатель будет устанавливаться извне
 
-    private final ArrayList<Note> data = new ArrayList<>();
+    private final ArrayList<Note> noteList = new ArrayList<>();
 
     public void addData(List<Note> toAdd) {
-        data.addAll(toAdd);
+        noteList.addAll(toAdd);
+    }
+
+    public void setResources(Resources resources) {
+        this.resources = resources;
     }
 
     @NonNull
@@ -30,22 +41,32 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull NoteListAdapter.MyViewHolder holder, int position) {
 
-        holder.title.setText(data.get(position).getTitle());
+        ColorManager colorManager = new ColorManager(resources);
+
+        holder.title.setText(noteList.get(position).getTitle());
+        holder.textPreview.setText(noteList.get(position).getText());
+        holder.color.setImageResource(colorManager.getColorIdFromResourcesArray(noteList.get(position).getColor()));
+
+//        noteList.get(1).getColor();
 
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return noteList.size();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView title;
+        TextView textPreview;
+        ImageView color;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.item_note);
+            title = itemView.findViewById(R.id.item_note_title);
+            textPreview = itemView.findViewById(R.id.item_note_text_preview);
+            color = itemView.findViewById(R.id.item_note_color);
 
             // Обработчик нажатий на этом ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {

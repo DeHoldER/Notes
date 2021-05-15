@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer-array name="color_id">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    </integer-array>
+
+    <array name="note_colors">
+        <item>@drawable/ic_color_white</item>
+        <item>@drawable/ic_color_green</item>
+        <item>@drawable/ic_color_red</item>
+        <item>@drawable/ic_color_blue</item>
+        <item>@drawable/ic_color_yellow</item>
+        <item>@drawable/ic_color_purple</item>
+    </array>
+</resources>
