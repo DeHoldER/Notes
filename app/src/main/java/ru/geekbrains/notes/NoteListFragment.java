@@ -19,9 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import ru.geekbrains.notes.domain.Note;
-import ru.geekbrains.notes.ui.NoteListAdapter;
-
 public class NoteListFragment extends Fragment {
 
     public interface OnNoteClicked {
@@ -58,7 +55,7 @@ public class NoteListFragment extends Fragment {
         NoteListAdapter adapter = new NoteListAdapter();
         recyclerView.setAdapter(adapter);
 
-        List<Note> dataList = new NotesRepo().getNoteList();
+        List<Note> dataList = new NotesRepository().getNoteList();
 
         recyclerView.setAdapter(adapter);
         adapter.addData(dataList);
@@ -71,7 +68,6 @@ public class NoteListFragment extends Fragment {
                 showNoteDetails(dataList.get(position).getNote());
             }
         });
-
         return view;
     }
 
@@ -113,7 +109,7 @@ public class NoteListFragment extends Fragment {
 
     // создаём список заметок на экране из массива
     private void initList(View view) {
-        List<Note> noteList = new NotesRepo().getNoteList();
+        List<Note> noteList = new NotesRepository().getNoteList();
         LinearLayout noteListView = (LinearLayout) view;
 
         // В этом цикле создаём элементы View, заполняем заголовки, и добавляем на экран.

@@ -1,4 +1,4 @@
-package ru.geekbrains.notes.domain;
+package ru.geekbrains.notes;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -39,6 +39,9 @@ public class Note implements Parcelable {
     protected Note(Parcel in) {
         title = in.readString();
         text = in.readString();
+        id = in.readString();
+        color = in.readInt();
+        date = (java.util.Date) in.readSerializable();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -52,6 +55,20 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(text);
+        dest.writeString(id);
+        dest.writeInt(color);
+        dest.writeSerializable(date);
+    }
 
     public String getTitle() {
         return title;
@@ -69,6 +86,14 @@ public class Note implements Parcelable {
         this.text = text;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -77,26 +102,18 @@ public class Note implements Parcelable {
         this.date = date;
     }
 
-    public Note getNote() {
-        return this;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(text);
-    }
-
     public int getColor() {
         return color;
     }
 
     public void setColor(int color) {
-        this.color = color;
+        if (color < 0 || color > 5) {
+            this.color = 0;
+        } else this.color = color;
     }
+
+    public Note getNote() {
+        return this;
+    }
+
 }

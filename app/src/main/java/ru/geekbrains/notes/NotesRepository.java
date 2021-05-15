@@ -3,13 +3,11 @@ package ru.geekbrains.notes;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.geekbrains.notes.domain.Note;
-
-public class NotesRepo {
+public class NotesRepository {
 
     private final List<Note> NOTES = new ArrayList<>();
 
-    public NotesRepo() {
+    public NotesRepository() {
         fillList(100);
     }
 

@@ -1,4 +1,4 @@
-package ru.geekbrains.notes.ui;
+package ru.geekbrains.notes;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import ru.geekbrains.notes.R;
-import ru.geekbrains.notes.domain.Note;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyViewHolder> {
 

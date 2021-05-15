@@ -1,4 +1,4 @@
-package ru.geekbrains.notes.ui;
+package ru.geekbrains.notes;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,15 +16,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import ru.geekbrains.notes.AboutFragment;
-import ru.geekbrains.notes.domain.Note;
-import ru.geekbrains.notes.NoteDetailsFragment;
-import ru.geekbrains.notes.NoteListFragment;
-import ru.geekbrains.notes.R;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
