@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".NoteDetailsFragment">
 
-    <TextView
-        android:id="@+id/textView_title"
+    <EditText
+        android:id="@+id/editText_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/note_detail_margin"
@@ -28,7 +28,7 @@
         android:textSize="@dimen/note_date_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_title"
+        app:layout_constraintTop_toBottomOf="@+id/editText_title"
         tools:text="Date" />
 
     <androidx.core.widget.NestedScrollView
@@ -39,15 +39,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_date">
 
-        <TextView
-            android:id="@+id/textView_text"
+        <EditText
+            android:id="@+id/editText_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/note_text_size"
+
+
             tools:text="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text" />
 
-
     </androidx.core.widget.NestedScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

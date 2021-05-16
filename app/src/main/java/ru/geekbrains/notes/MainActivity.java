@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         loadList();
         initDrawer();
 
+        NotesRepository notesRepository = new NotesRepository();
+
 //        RecyclerView noteList = findViewById(R.id.note_list_recycler);
 //
 //        NoteListAdapter adapter = new NoteListAdapter();

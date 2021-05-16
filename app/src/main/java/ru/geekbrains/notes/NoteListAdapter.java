@@ -67,12 +67,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
             color = itemView.findViewById(R.id.item_note_color);
 
             // Обработчик нажатий на этом ViewHolder
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (itemClickListener != null) {
-                        itemClickListener.onItemClick(v, getAdapterPosition());
-                    }
+            itemView.setOnLongClickListener(v -> {
+                if (itemClickListener != null) {
+                    itemClickListener.onItemLongClick(v, getAdapterPosition());
+                } return true;
+            });
+            itemView.setOnClickListener(v -> {
+                if (itemClickListener != null) {
+                    itemClickListener.onItemClick(v, getAdapterPosition());
                 }
             });
         }
@@ -83,8 +85,11 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
         this.itemClickListener = itemClickListener;
     }
 
-    // Интерфейс для обработки нажатий, как в ListView
+    // Интерфейс для обработки нажатий
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
+
+        void onItemLongClick(View v, int adapterPosition);
+
     }
 }

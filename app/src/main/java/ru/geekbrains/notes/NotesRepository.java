@@ -57,5 +57,4 @@ public class NotesRepository {
         Note newNote = new Note(id, title, text);
         NOTES.add(newNote);
     }
-
 }

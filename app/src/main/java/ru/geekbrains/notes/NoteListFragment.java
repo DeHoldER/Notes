@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,11 +19,11 @@ import java.util.List;
 
 public class NoteListFragment extends Fragment {
 
+    private OnNoteClicked onNoteClicked;
+
     public interface OnNoteClicked {
         void onNoteClicked(Note note);
     }
-
-    private OnNoteClicked onNoteClicked;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -65,9 +63,15 @@ public class NoteListFragment extends Fragment {
         // Установим слушателя
         adapter.SetOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
             @Override
+            public void onItemLongClick(View v, int position) {
+                showPopupMenu(v, dataList.get(position).getNote());
+            }
+
+            @Override
             public void onItemClick(View view, int position) {
                 showNoteDetails(dataList.get(position).getNote());
             }
+
         });
         return view;
     }
@@ -81,56 +85,49 @@ public class NoteListFragment extends Fragment {
 
     }
 
-    private void initPopupMenu(View view, Note note) {
-        view.setOnLongClickListener((View.OnLongClickListener) v -> {
-            PopupMenu popupMenu = new PopupMenu(requireContext(), v);
+    private void showPopupMenu(View view, Note note) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
 
-            requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+        requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
 
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.action_do_something) {
-                        Toast.makeText(requireContext(), "Do something with " + note.getTitle(), Toast.LENGTH_SHORT).show();
-                    }
-                    if (item.getItemId() == R.id.action_delete_note) {
-                        Toast.makeText(requireContext(), "Delete note " + note.getTitle(), Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.action_do_something) {
+                    Toast.makeText(requireContext(), "Do something with " + note.getTitle(), Toast.LENGTH_SHORT).show();
                 }
-            });
-            popupMenu.show();
-            return true;
-
-
+                if (item.getItemId() == R.id.action_delete_note) {
+                    Toast.makeText(requireContext(), "Delete note " + note.getTitle(), Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
         });
-
-
+        popupMenu.show();
     }
 
-    // создаём список заметок на экране из массива
-    private void initList(View view) {
-        List<Note> noteList = new NotesRepository().getNoteList();
-        LinearLayout noteListView = (LinearLayout) view;
-
-        // В этом цикле создаём элементы View, заполняем заголовки, и добавляем на экран.
-        // Кроме того, создаём обработку касания на элемент
-        for (Note note : noteList) {
-
-            View noteView = LayoutInflater.from(requireContext())
-                    .inflate(R.layout.item_note_title_deprecated, noteListView, false);
-
-
-            TextView noteTitle = noteView.findViewById(R.id.note_title);
-            noteTitle.setText(note.getTitle());
-
-            noteView.setOnClickListener(v -> showNoteDetails(note));
-            initPopupMenu(noteView, note);
-
-            noteListView.addView(noteView);
-
-        }
-    }
+//    // создаём список заметок на экране из массива
+//    private void initList(View view) {
+//        List<Note> noteList = new NotesRepository().getNoteList();
+//        LinearLayout noteListView = (LinearLayout) view;
+//
+//        // В этом цикле создаём элементы View, заполняем заголовки, и добавляем на экран.
+//        // Кроме того, создаём обработку касания на элемент
+//        for (Note note : noteList) {
+//
+//            View noteView = LayoutInflater.from(requireContext())
+//                    .inflate(R.layout.item_note_title_deprecated, noteListView, false);
+//
+//
+//            TextView noteTitle = noteView.findViewById(R.id.note_title);
+//            noteTitle.setText(note.getTitle());
+//
+//            noteView.setOnClickListener(v -> showNoteDetails(note));
+//            initPopupMenu(noteView, note);
+//
+//            noteListView.addView(noteView);
+//
+//        }
+//    }
 
     private void showNoteDetails(Note note) {
 
