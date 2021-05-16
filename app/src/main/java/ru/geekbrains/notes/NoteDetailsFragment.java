@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.text.SimpleDateFormat;
+
 public class NoteDetailsFragment extends Fragment {
 
     private static final String ARG_NOTE = "ARG_NOTE";
@@ -41,7 +43,7 @@ public class NoteDetailsFragment extends Fragment {
 
         Note note = getArguments().getParcelable(ARG_NOTE);
         titleView.setText(note.getTitle());
-        dateView.setText(note.getDate().toString());
         textView.setText(note.getText());
+        dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
     }
 }
