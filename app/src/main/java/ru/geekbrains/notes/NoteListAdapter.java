@@ -47,8 +47,6 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
         holder.textPreview.setText(noteList.get(position).getText());
         holder.color.setImageResource(colorManager.getColorIdFromResourcesArray(noteList.get(position).getColor()));
 
-//        noteList.get(1).getColor();
-
     }
 
     @Override
