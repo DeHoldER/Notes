@@ -9,17 +9,39 @@ public class Note implements Parcelable {
 
     private String title;
     private String text;
+    private String id;
     private Date date;
+    private int color;
 
-    public Note(String title, String text) {
+    public static final int COLOR_WHITE = 0;
+    public static final int COLOR_GREEN = 1;
+    public static final int COLOR_RED = 2;
+    public static final int COLOR_BLUE = 3;
+    public static final int COLOR_YELLOW = 4;
+    public static final int COLOR_PURPLE = 5;
+
+    public Note(String id, String title, String text) {
+        this.id = id;
         this.title = title;
         this.text = text;
         this.date = new Date();
+        this.color = 0;
+    }
+
+    public Note(String id, String title, String text, int color) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.date = new Date();
+        this.color = color;
     }
 
     protected Note(Parcel in) {
         title = in.readString();
         text = in.readString();
+        id = in.readString();
+        color = in.readInt();
+        date = (java.util.Date) in.readSerializable();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -33,6 +55,20 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(text);
+        dest.writeString(id);
+        dest.writeInt(color);
+        dest.writeSerializable(date);
+    }
 
     public String getTitle() {
         return title;
@@ -50,6 +86,14 @@ public class Note implements Parcelable {
         this.text = text;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -58,14 +102,18 @@ public class Note implements Parcelable {
         this.date = date;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getColor() {
+        return color;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(text);
+    public void setColor(int color) {
+        if (color < 0 || color > 5) {
+            this.color = 0;
+        } else this.color = color;
     }
+
+    public Note getNote() {
+        return this;
+    }
+
 }
