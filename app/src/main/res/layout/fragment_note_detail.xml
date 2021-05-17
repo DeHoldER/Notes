@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".NoteDetailsFragment">
 
+    <ImageView
+        android:id="@+id/note_details_color"
+        android:layout_width="@dimen/pic_size"
+        android:layout_height="@dimen/pic_size"
+        android:layout_margin="@dimen/margin_note_item"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_color_green" />
+
     <TextView
         android:id="@+id/textView_title"
         android:layout_width="wrap_content"
@@ -16,7 +26,7 @@
         android:textSize="@dimen/note_title_detail_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/note_details_color"
         tools:text="Title" />
 
     <TextView

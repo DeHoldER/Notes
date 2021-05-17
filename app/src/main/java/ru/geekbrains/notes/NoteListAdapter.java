@@ -16,17 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.geekbrains.notes.repository.NotesRepositoryImpl;
+import ru.geekbrains.notes.repository.RepositoryManager;
+
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyViewHolder> {
 
     private Resources resources;
 
     private OnItemClickListener itemClickListener; // Слушатель будет устанавливаться извне
 
-    private final ArrayList<Note> noteList = new ArrayList<>();
-
-    public void addData(List<Note> toAdd) {
-        noteList.addAll(toAdd);
-    }
+    RepositoryManager repositoryManager = new NotesRepositoryImpl();
 
     public void setResources(Resources resources) {
         this.resources = resources;
@@ -43,15 +42,15 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
 
         ColorManager colorManager = new ColorManager(resources);
 
-        holder.title.setText(noteList.get(position).getTitle());
-        holder.textPreview.setText(noteList.get(position).getText());
-        holder.color.setImageResource(colorManager.getColorIdFromResourcesArray(noteList.get(position).getColor()));
+        holder.title.setText(repositoryManager.getNote(position).getTitle());
+        holder.textPreview.setText(repositoryManager.getNote(position).getText());
+        holder.color.setImageResource(colorManager.getColorIdFromResourcesArray(repositoryManager.getNote(position).getColor()));
 
     }
 
     @Override
     public int getItemCount() {
-        return noteList.size();
+        return repositoryManager.getNoteListSize();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

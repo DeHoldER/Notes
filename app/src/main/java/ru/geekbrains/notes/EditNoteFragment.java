@@ -2,63 +2,107 @@ package ru.geekbrains.notes;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditNoteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import ru.geekbrains.notes.repository.NotesRepositoryImpl;
+import ru.geekbrains.notes.repository.RepositoryManager;
+
 public class EditNoteFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+//    private static final String ARG_NOTE = "ARG_NOTE";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+//    public static NoteDetailsFragment newInstance(Note note) {
+//        NoteDetailsFragment fragment = new NoteDetailsFragment();
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(ARG_NOTE, note);
+//
+//        fragment.setArguments(bundle);
+//        return fragment;
+//    }
 
-    public EditNoteFragment() {
-        // Required empty public constructor
-    }
+    RepositoryManager repositoryManager = new NotesRepositoryImpl();
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditNoteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String param1, String param2) {
-        EditNoteFragment fragment = new EditNoteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private TextView titleView;
+    private TextView textView;
+    private TextView dateView;
 
+    private int colorSelected = Note.COLOR_WHITE;
+
+
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_edit_note, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        titleView = view.findViewById(R.id.editText_title);
+        textView = view.findViewById(R.id.editText_text);
+        dateView = view.findViewById(R.id.textView_date);
+
+        List<ImageView> colors = new ArrayList<>();
+
+        colors.add(view.findViewById(R.id.edit_color_white));
+        colors.add(view.findViewById(R.id.edit_color_green));
+        colors.add(view.findViewById(R.id.edit_color_red));
+        colors.add(view.findViewById(R.id.edit_color_blue));
+        colors.add(view.findViewById(R.id.edit_color_yellow));
+        colors.add(view.findViewById(R.id.edit_color_purple));
+
+        for (int i = 0; i < colors.size(); i++) {
+            int finalI = i;
+            colors.get(i).setOnClickListener(v -> {
+                if (colorSelected != finalI) {
+                colorSelected = finalI;
+                    for (int j = 0; j < colors.size(); j++) {
+                        if (j != finalI) {
+                            colors.get(j).setVisibility(ImageView.GONE);
+                        }
+                    }
+                } else {
+                    for (int j = 0; j < colors.size(); j++) {
+                        if (j != finalI) {
+                            colors.get(j).setVisibility(ImageView.VISIBLE);
+                        }
+                    }
+                }
+            });
+        }
+
+//        colorWhite.setOnClickListener(v -> {
+//            colorSelected = Note.COLOR_WHITE;
+//            for (int i = 0; i < 5; i++) {
+//                colors.get(i).setVisibility(ImageView.VISIBLE);
+//            }
+//        });
+
+//        Note note = getArguments().getParcelable(ARG_NOTE);
+//        titleView.setText(note.getTitle());
+//        textView.setText(note.getText());
+//        dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Note note = new Note("id_test", titleView.getText().toString(), textView.getText().toString(), colorSelected);
+        repositoryManager.addNote(note);
     }
 }

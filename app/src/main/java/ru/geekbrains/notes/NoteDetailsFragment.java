@@ -1,9 +1,11 @@
 package ru.geekbrains.notes;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
+
+import ru.geekbrains.notes.repository.NotesRepositoryImpl;
+import ru.geekbrains.notes.repository.RepositoryManager;
 
 public class NoteDetailsFragment extends Fragment {
 
@@ -40,8 +45,11 @@ public class NoteDetailsFragment extends Fragment {
         TextView titleView = view.findViewById(R.id.textView_title);
         TextView dateView = view.findViewById(R.id.textView_date);
         TextView textView = view.findViewById(R.id.textView_text);
+        ImageView color = view.findViewById(R.id.note_details_color);
+
 
         Note note = getArguments().getParcelable(ARG_NOTE);
+        color.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(note.getColor()));
         titleView.setText(note.getTitle());
         textView.setText(note.getText());
         dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));

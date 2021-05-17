@@ -1,17 +1,17 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes.repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotesRepository {
+import ru.geekbrains.notes.Note;
 
-    private final List<Note> NOTES = new ArrayList<>();
+public class RepoMock {
 
-    public NotesRepository() {
-        fillList(100);
-    }
+    // Временное хранилище (эмулятор базы данных/сервера)
 
-    private void fillList(int noteNumber) {
+    public static List<Note> NOTES = new ArrayList<>();
+
+    public static void fillList(int noteNumber) {
 
         NOTES.add(new Note("id1", "Заметка № 1",
                 "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
@@ -41,20 +41,7 @@ public class NotesRepository {
         }
     }
 
-    public int getNoteListSize() {
-        return NOTES.size();
-    }
-
-    public Note getNote(int id) {
-        return NOTES.get(id);
-    }
-
-    public List<Note> getNoteList() {
+    public static List<Note> getNOTES(){
         return NOTES;
-    }
-
-    public void putNewNote(String id, String title, String text) {
-        Note newNote = new Note(id, title, text);
-        NOTES.add(newNote);
     }
 }

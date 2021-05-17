@@ -6,6 +6,95 @@
     android:layout_height="match_parent"
     tools:context=".NoteDetailsFragment">
 
+    <TextView
+        android:id="@+id/description_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Заголовок"
+        android:textSize="@dimen/note_description_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText_title" />
+
+    <LinearLayout
+        android:id="@+id/color_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description_date">
+
+        <ImageView
+            android:id="@+id/edit_color_white"
+            android:layout_width="@dimen/pic_size"
+            android:layout_height="@dimen/pic_size"
+            android:layout_margin="@dimen/margin_note_item"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_color_white" />
+
+        <ImageView
+            android:id="@+id/edit_color_green"
+            android:layout_width="@dimen/pic_size"
+            android:layout_height="@dimen/pic_size"
+            android:layout_margin="@dimen/margin_note_item"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_color_green" />
+
+        <ImageView
+            android:id="@+id/edit_color_red"
+            android:layout_width="@dimen/pic_size"
+            android:layout_height="@dimen/pic_size"
+            android:layout_margin="@dimen/margin_note_item"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_color_red" />
+
+        <ImageView
+            android:id="@+id/edit_color_blue"
+            android:layout_width="@dimen/pic_size"
+            android:layout_height="@dimen/pic_size"
+            android:layout_margin="@dimen/margin_note_item"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_color_blue" />
+
+        <ImageView
+            android:id="@+id/edit_color_yellow"
+            android:layout_width="@dimen/pic_size"
+            android:layout_height="@dimen/pic_size"
+            android:layout_margin="@dimen/margin_note_item"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_color_yellow" />
+
+        <ImageView
+            android:id="@+id/edit_color_purple"
+            android:layout_width="@dimen/pic_size"
+            android:layout_height="@dimen/pic_size"
+            android:layout_margin="@dimen/margin_note_item"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_color_purple" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/description_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Цвет заметки"
+        android:textSize="@dimen/note_description_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/color_container" />
+
     <EditText
         android:id="@+id/editText_title"
         android:layout_width="wrap_content"
@@ -28,16 +117,28 @@
         android:textSize="@dimen/note_date_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_title"
+        app:layout_constraintTop_toBottomOf="@+id/description_title"
         tools:text="Date" />
 
+    <TextView
+        android:id="@+id/description_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Дата и время"
+        android:textSize="@dimen/note_description_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_date" />
+
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/note_detail_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_date">
+        app:layout_constraintTop_toBottomOf="@+id/color_container">
 
         <EditText
             android:id="@+id/editText_text"
@@ -45,11 +146,18 @@
             android:layout_height="wrap_content"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/note_text_size"
-
-
             tools:text="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text" />
 
     </androidx.core.widget.NestedScrollView>
 
+    <TextView
+        android:id="@+id/description_title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Текст заметки"
+        android:textSize="@dimen/note_description_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scroll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

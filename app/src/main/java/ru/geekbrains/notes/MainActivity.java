@@ -25,26 +25,22 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private Note lastOpenedNote;
     private static final String KEY_LAST_NOTE = "KEY_LAST_NOTE";
 
+    NoteListFragment noteListFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        Repo.fillList(0);
+
+        noteListFragment = new NoteListFragment();
+
         initFields(savedInstanceState);
         loadList();
         initDrawer();
 
-        NotesRepository notesRepository = new NotesRepository();
-
-//        RecyclerView noteList = findViewById(R.id.note_list_recycler);
-//
-//        NoteListAdapter adapter = new NoteListAdapter();
-//        noteList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-//
-//        noteList.setAdapter(adapter);
-//        adapter.addData(dataList);
-//        adapter.notifyDataSetChanged();
 
     }
 
@@ -94,8 +90,10 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_settings) {
+
+                if (item.getItemId() == R.id.action_new_note) {
                     Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
+                    addFragment(new EditNoteFragment());
                     return true;
                 }
 
@@ -130,11 +128,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private void loadList() {
         Fragment fragmentContainer = fragmentManager.findFragmentById(R.id.fragment_container);
 
+
+
         if (!isLandscape) {
             if (lastOpenedNote != null) {
                 if (fragmentContainer instanceof NoteDetailsFragment) {
                     fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, new NoteListFragment())
+                            .replace(R.id.fragment_container, noteListFragment)
                             .commit();
                 }
                 fragmentManager.beginTransaction()
@@ -145,18 +145,18 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             } else {
                 fragmentManager.beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .replace(R.id.fragment_container, new NoteListFragment())
+                        .replace(R.id.fragment_container, noteListFragment)
                         .commit();
             }
         } else {
             if (lastOpenedNote != null) {
                 fragmentManager.beginTransaction()
-                        .replace(R.id.list_container, new NoteListFragment())
+                        .replace(R.id.list_container, noteListFragment)
                         .replace(R.id.detail_container, NoteDetailsFragment.newInstance(lastOpenedNote))
                         .commit();
             } else {
                 fragmentManager.beginTransaction()
-                        .replace(R.id.list_container, new NoteListFragment())
+                        .replace(R.id.list_container, noteListFragment)
                         .commit();
             }
         }

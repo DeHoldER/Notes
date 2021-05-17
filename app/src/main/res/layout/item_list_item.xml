@@ -36,19 +36,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_note_item"
+                android:maxLines="1"
+                android:textColor="@color/dark_grey"
                 android:textSize="@dimen/note_title_text_size"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/dark_grey"
                 tools:text="asdasasd" />
 
             <TextView
                 android:id="@+id/item_note_text_preview"
                 android:layout_width="0dp"
-                android:textColor="@color/light_grey"
-                android:textSize="@dimen/note_text_preview_size"
                 android:layout_height="wrap_content"
                 android:maxLines="3"
+                android:textColor="@color/light_grey"
+                android:textSize="@dimen/note_text_preview_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/item_note_title"

@@ -15,11 +15,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import ru.geekbrains.notes.repository.NotesRepositoryImpl;
+import ru.geekbrains.notes.repository.RepositoryManager;
 
 public class NoteListFragment extends Fragment {
 
     private OnNoteClicked onNoteClicked;
+
+    NoteListAdapter adapter;
+
+    private final RepositoryManager repositoryManager = new NotesRepositoryImpl();
 
     public interface OnNoteClicked {
         void onNoteClicked(Note note);
@@ -43,20 +48,20 @@ public class NoteListFragment extends Fragment {
     // При создании фрагмента укажем его макет
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        return inflater.inflate(R.layout.fragment_note_list, container, false);
 
         View view = inflater.inflate(R.layout.note_list_recycler_view, container, false);
 
         Context context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view;
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        NoteListAdapter adapter = new NoteListAdapter();
-        recyclerView.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
 
-        List<Note> dataList = new NotesRepository().getNoteList();
+        adapter = new NoteListAdapter();
 
         recyclerView.setAdapter(adapter);
-        adapter.addData(dataList);
+//        adapter.getNotes(repositoryManager.getNoteList());
         adapter.setResources(getResources());
         adapter.notifyDataSetChanged();
 
@@ -64,12 +69,12 @@ public class NoteListFragment extends Fragment {
         adapter.SetOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
             @Override
             public void onItemLongClick(View v, int position) {
-                showPopupMenu(v, dataList.get(position).getNote());
+                showPopupMenu(v, position);
             }
 
             @Override
             public void onItemClick(View view, int position) {
-                showNoteDetails(dataList.get(position).getNote());
+                showNoteDetails(repositoryManager.getNote(position));
             }
 
         });
@@ -81,11 +86,9 @@ public class NoteListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        initList(view);
-
     }
 
-    private void showPopupMenu(View view, Note note) {
+    private void showPopupMenu(View view, int position) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
 
         requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
@@ -93,41 +96,19 @@ public class NoteListFragment extends Fragment {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_do_something) {
-                    Toast.makeText(requireContext(), "Do something with " + note.getTitle(), Toast.LENGTH_SHORT).show();
+                if (item.getItemId() == R.id.action_edit_note) {
+//                    repositoryManager.editNote(position);
+                    Toast.makeText(requireContext(), "Do something with " + repositoryManager.getNote(position).getTitle(), Toast.LENGTH_SHORT).show();
                 }
                 if (item.getItemId() == R.id.action_delete_note) {
-                    Toast.makeText(requireContext(), "Delete note " + note.getTitle(), Toast.LENGTH_SHORT).show();
+                    repositoryManager.removeNote(position);
+                    adapter.notifyItemRemoved(position);
                 }
                 return true;
             }
         });
         popupMenu.show();
     }
-
-//    // создаём список заметок на экране из массива
-//    private void initList(View view) {
-//        List<Note> noteList = new NotesRepository().getNoteList();
-//        LinearLayout noteListView = (LinearLayout) view;
-//
-//        // В этом цикле создаём элементы View, заполняем заголовки, и добавляем на экран.
-//        // Кроме того, создаём обработку касания на элемент
-//        for (Note note : noteList) {
-//
-//            View noteView = LayoutInflater.from(requireContext())
-//                    .inflate(R.layout.item_note_title_deprecated, noteListView, false);
-//
-//
-//            TextView noteTitle = noteView.findViewById(R.id.note_title);
-//            noteTitle.setText(note.getTitle());
-//
-//            noteView.setOnClickListener(v -> showNoteDetails(note));
-//            initPopupMenu(noteView, note);
-//
-//            noteListView.addView(noteView);
-//
-//        }
-//    }
 
     private void showNoteDetails(Note note) {
 
