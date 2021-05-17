@@ -39,13 +39,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull NoteListAdapter.MyViewHolder holder, int position) {
-
-        ColorManager colorManager = new ColorManager(resources);
-
-        holder.title.setText(repositoryManager.getNote(position).getTitle());
-        holder.textPreview.setText(repositoryManager.getNote(position).getText());
-        holder.color.setImageResource(colorManager.getColorIdFromResourcesArray(repositoryManager.getNote(position).getColor()));
-
+        holder.bind(repositoryManager.getNote(position));
     }
 
     @Override
@@ -55,9 +49,9 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title;
-        TextView textPreview;
-        ImageView color;
+        private final TextView title;
+        private final TextView textPreview;
+        private final ImageView color;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,6 +71,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyView
                 }
             });
         }
+
+        public void bind(Note note) {
+            ColorManager colorManager = new ColorManager(resources);
+            title.setText(note.getTitle());
+            textPreview.setText(note.getText());
+            color.setImageResource(colorManager.getColorIdFromResourcesArray(note.getColor()));
+        }
+
     }
 
     // Сеттер слушателя нажатий

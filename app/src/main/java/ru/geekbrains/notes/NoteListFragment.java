@@ -22,7 +22,9 @@ public class NoteListFragment extends Fragment {
 
     private OnNoteClicked onNoteClicked;
 
-    NoteListAdapter adapter;
+    private NoteListAdapter adapter;
+
+    private LinearLayoutManager linearLayoutManager;
 
     private final RepositoryManager repositoryManager = new NotesRepositoryImpl();
 
@@ -53,7 +55,7 @@ public class NoteListFragment extends Fragment {
 
         Context context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view;
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
@@ -61,7 +63,6 @@ public class NoteListFragment extends Fragment {
         adapter = new NoteListAdapter();
 
         recyclerView.setAdapter(adapter);
-//        adapter.getNotes(repositoryManager.getNoteList());
         adapter.setResources(getResources());
         adapter.notifyDataSetChanged();
 
@@ -90,32 +91,32 @@ public class NoteListFragment extends Fragment {
 
     private void showPopupMenu(View view, int position) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-
         requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
 
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_edit_note) {
-//                    repositoryManager.editNote(position);
-                    Toast.makeText(requireContext(), "Do something with " + repositoryManager.getNote(position).getTitle(), Toast.LENGTH_SHORT).show();
-                }
-                if (item.getItemId() == R.id.action_delete_note) {
-                    repositoryManager.removeNote(position);
-                    adapter.notifyItemRemoved(position);
-                }
-                return true;
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_edit_note) {
+//                    repositoryManager.editNote(position); TODO !!!!!
+                linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
+                Toast.makeText(requireContext(), "Do something with " + repositoryManager.getNote(position).getTitle(), Toast.LENGTH_SHORT).show();
             }
+            if (item.getItemId() == R.id.action_delete_note) {
+                repositoryManager.removeNote(position);
+                adapter.notifyItemRemoved(position);
+            }
+            return true;
         });
         popupMenu.show();
     }
 
     private void showNoteDetails(Note note) {
-
         if (onNoteClicked != null) {
             onNoteClicked.onNoteClicked(note);
         }
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
+    }
 }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Notes</string>
     <string name="category_ico">category_ico</string>
-    <string name="settings">Новая заметка</string>
+    <string name="new_note">Новая заметка</string>
     <string name="category">Category</string>
     <string name="sorting">Sorting</string>
     <string name="search">Search</string>
@@ -15,4 +15,10 @@
     <string name="hello_blank_fragment">Notes app © 2021 by MrFox</string>
     <string name="user_name">User name</string>
     <string name="user_account">test@mail.ru</string>
+    <string name="settings">Настройки</string>
+    <string name="note_list">Список заметок</string>
+    <string name="description_color_text">Цвет заметки</string>
+    <string name="description_title_text">Заголовок</string>
+    <string name="description_date_text">Дата и время</string>
+    <string name="description_text_text">Текст заметки</string>
 </resources>

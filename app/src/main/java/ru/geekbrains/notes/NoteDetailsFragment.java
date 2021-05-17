@@ -48,10 +48,16 @@ public class NoteDetailsFragment extends Fragment {
         ImageView color = view.findViewById(R.id.note_details_color);
 
 
-        Note note = getArguments().getParcelable(ARG_NOTE);
-        color.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(note.getColor()));
-        titleView.setText(note.getTitle());
-        textView.setText(note.getText());
-        dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
+        Note note = null;
+        if (getArguments() != null) {
+            note = getArguments().getParcelable(ARG_NOTE);
+        }
+
+        if (note != null) {
+            color.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(note.getColor()));
+            titleView.setText(note.getTitle());
+            textView.setText(note.getText());
+            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
+        }
     }
 }

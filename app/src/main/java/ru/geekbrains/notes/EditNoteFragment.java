@@ -67,6 +67,7 @@ public class EditNoteFragment extends Fragment {
 
         for (int i = 0; i < colors.size(); i++) {
             int finalI = i;
+            // ставим листнеры на вьюшки с кружочками
             colors.get(i).setOnClickListener(v -> {
                 if (colorSelected != finalI) {
                 colorSelected = finalI;

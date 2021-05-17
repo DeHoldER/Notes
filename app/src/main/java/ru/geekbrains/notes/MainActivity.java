@@ -17,6 +17,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
+import ru.geekbrains.notes.repository.RepoMock;
+
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
     private boolean isLandscape;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private static final String KEY_LAST_NOTE = "KEY_LAST_NOTE";
 
     NoteListFragment noteListFragment;
+    Fragment fragmentContainer;
 
 
     @Override
@@ -33,9 +36,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Repo.fillList(0);
-
-        noteListFragment = new NoteListFragment();
+        RepoMock.fillList(10);
 
         initFields(savedInstanceState);
         loadList();
@@ -92,9 +93,10 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             public boolean onMenuItemClick(MenuItem item) {
 
                 if (item.getItemId() == R.id.action_new_note) {
-                    Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
-                    addFragment(new EditNoteFragment());
-                    return true;
+                    if (!(fragmentContainer instanceof EditNoteFragment)) {
+                        addFragment(new EditNoteFragment());
+                        return true;
+                    }
                 }
 
                 if (item.getItemId() == R.id.action_sorting) {
@@ -115,6 +117,9 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private boolean navigateFragment(int id) {
         NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("id1", "Settings", "Заглушка для настроек"));
         switch (id) {
+            case R.id.action_goto_note_list:
+                addFragment(noteListFragment);
+                return true;
             case R.id.action_settings:
                 addFragment(settingsPlugFragment);
                 return true;
@@ -126,8 +131,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     private void loadList() {
-        Fragment fragmentContainer = fragmentManager.findFragmentById(R.id.fragment_container);
-
+        noteListFragment = new NoteListFragment();
+        fragmentContainer = fragmentManager.findFragmentById(R.id.fragment_container);
 
 
         if (!isLandscape) {

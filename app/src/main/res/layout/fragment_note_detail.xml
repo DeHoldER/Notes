@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:layout_marginStart="@dimen/note_detail_margin"
+    android:layout_marginEnd="@dimen/note_detail_margin"
+    android:orientation="vertical"
     tools:context=".NoteDetailsFragment">
-
-    <ImageView
-        android:id="@+id/note_details_color"
-        android:layout_width="@dimen/pic_size"
-        android:layout_height="@dimen/pic_size"
-        android:layout_margin="@dimen/margin_note_item"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_color_green" />
 
     <TextView
         android:id="@+id/textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/note_detail_margin"
+        android:layout_marginTop="@dimen/note_detail_margin"
         android:textAlignment="center"
         android:textColor="@color/dark_grey"
         android:textSize="@dimen/note_title_detail_text_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/note_details_color"
         tools:text="Title" />
+
+    <ImageView
+        android:id="@+id/note_details_color"
+        android:layout_width="@dimen/pic_size"
+        android:layout_height="@dimen/pic_size"
+        android:layout_marginTop="@dimen/note_detail_margin"
+        app:srcCompat="@drawable/ic_color_white" />
 
     <TextView
         android:id="@+id/textView_date"
@@ -36,18 +34,11 @@
         android:layout_margin="@dimen/note_detail_margin"
         android:textColor="@color/light_grey"
         android:textSize="@dimen/note_date_text_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_title"
         tools:text="Date" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/note_detail_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_date">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/textView_text"
@@ -57,7 +48,6 @@
             android:textSize="@dimen/note_text_size"
             tools:text="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text" />
 
-
     </androidx.core.widget.NestedScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
