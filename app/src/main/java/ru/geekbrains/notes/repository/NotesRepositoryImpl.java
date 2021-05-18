@@ -12,8 +12,8 @@ public class NotesRepositoryImpl implements RepositoryManager {
     }
 
     @Override
-    public Note getNote(int id) {
-        return RepoMock.NOTES.get(id);
+    public Note getNote(int position) {
+        return RepoMock.NOTES.get(position);
     }
 
     @Override
@@ -32,8 +32,8 @@ public class NotesRepositoryImpl implements RepositoryManager {
     }
 
     @Override
-    public void editNote(int position) {
-        //todo
+    public void editNote(int position, Note note) {
+        RepoMock.NOTES.set(position, note);
     }
 
 }

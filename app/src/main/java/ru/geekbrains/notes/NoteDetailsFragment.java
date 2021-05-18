@@ -47,7 +47,6 @@ public class NoteDetailsFragment extends Fragment {
         TextView textView = view.findViewById(R.id.textView_text);
         ImageView color = view.findViewById(R.id.note_details_color);
 
-
         Note note = null;
         if (getArguments() != null) {
             note = getArguments().getParcelable(ARG_NOTE);

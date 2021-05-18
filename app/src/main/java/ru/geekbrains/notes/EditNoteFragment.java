@@ -1,5 +1,6 @@
 package ru.geekbrains.notes;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.geekbrains.notes.repository.NotesRepositoryImpl;
@@ -22,7 +24,7 @@ import ru.geekbrains.notes.repository.RepositoryManager;
 public class EditNoteFragment extends Fragment {
 
 //    private static final String ARG_NOTE = "ARG_NOTE";
-
+//
 //    public static NoteDetailsFragment newInstance(Note note) {
 //        NoteDetailsFragment fragment = new NoteDetailsFragment();
 //
@@ -56,6 +58,9 @@ public class EditNoteFragment extends Fragment {
         textView = view.findViewById(R.id.editText_text);
         dateView = view.findViewById(R.id.textView_date);
 
+        Date date = new Date();
+        dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(date));
+
         List<ImageView> colors = new ArrayList<>();
 
         colors.add(view.findViewById(R.id.edit_color_white));
@@ -70,7 +75,7 @@ public class EditNoteFragment extends Fragment {
             // ставим листнеры на вьюшки с кружочками
             colors.get(i).setOnClickListener(v -> {
                 if (colorSelected != finalI) {
-                colorSelected = finalI;
+                    colorSelected = finalI;
                     for (int j = 0; j < colors.size(); j++) {
                         if (j != finalI) {
                             colors.get(j).setVisibility(ImageView.GONE);
@@ -103,7 +108,8 @@ public class EditNoteFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Note note = new Note("id_test", titleView.getText().toString(), textView.getText().toString(), colorSelected);
+        String id = "id" + repositoryManager.getNoteListSize();
+        Note note = new Note(id, titleView.getText().toString(), textView.getText().toString(), colorSelected);
         repositoryManager.addNote(note);
     }
 }

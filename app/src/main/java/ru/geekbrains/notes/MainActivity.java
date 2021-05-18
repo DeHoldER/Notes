@@ -36,12 +36,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RepoMock.fillList(10);
+        if (savedInstanceState == null) {
+            RepoMock.fillList(6);
+        }
 
         initFields(savedInstanceState);
         loadList();
         initDrawer();
-
 
     }
 
@@ -77,39 +78,34 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
         // Обработка навигационного меню
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                if (navigateFragment(id)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                    return true;
-                }
-                return false;
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (navigateFragment(id)) {
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
             }
+            return false;
         });
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
 
-                if (item.getItemId() == R.id.action_new_note) {
-                    if (!(fragmentContainer instanceof EditNoteFragment)) {
-                        addFragment(new EditNoteFragment());
-                        return true;
-                    }
-                }
+        toolbar.setOnMenuItemClickListener(item -> {
 
-                if (item.getItemId() == R.id.action_sorting) {
-                    Toast.makeText(MainActivity.this, "Sorting clicked", Toast.LENGTH_SHORT).show();
+            if (item.getItemId() == R.id.action_new_note) {
+                if (!(fragmentContainer instanceof EditNoteFragment)) {
+                    addFragment(new EditNoteFragment());
                     return true;
                 }
-
-                if (item.getItemId() == R.id.action_search) {
-                    Toast.makeText(MainActivity.this, "Search clicked", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
             }
+
+            if (item.getItemId() == R.id.action_sorting) {
+                Toast.makeText(MainActivity.this, "Sorting clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            if (item.getItemId() == R.id.action_search) {
+                Toast.makeText(MainActivity.this, "Search clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            return false;
         });
 
     }

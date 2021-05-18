@@ -12,7 +12,7 @@ public interface RepositoryManager {
 
     void removeNote(int position);
 
-    void editNote(int position);
+    void editNote(int position, Note note);
 
     int getNoteListSize();
 
