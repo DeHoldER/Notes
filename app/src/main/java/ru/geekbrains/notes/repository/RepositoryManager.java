@@ -10,9 +10,11 @@ public interface RepositoryManager {
 
     void addNote(Note note);
 
+    void editNote(int position, Note note);
+
     void removeNote(int position);
 
-    void editNote(int position, Note note);
+    void clear();
 
     int getNoteListSize();
 

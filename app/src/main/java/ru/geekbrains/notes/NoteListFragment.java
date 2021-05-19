@@ -1,8 +1,14 @@
 package ru.geekbrains.notes;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
@@ -42,8 +48,11 @@ public class NoteListFragment extends Fragment {
         // Установим слушателя
         adapter.SetOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
             @Override
-            public void onItemLongClick(View v, int position) {
-                showPopupMenu(v, position);
+            public void onItemLongClick(View v, int position, View itemView) {
+//                showPopupMenu(v, position);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    itemView.showContextMenu(5, 10);
+                }
             }
 
             @Override
@@ -95,9 +104,38 @@ public class NoteListFragment extends Fragment {
                 repositoryManager.removeNote(position);
                 adapter.notifyItemRemoved(position);
             }
+            if (item.getItemId() == R.id.action_clear) {
+                repositoryManager.clear();
+                adapter.notifyDataSetChanged();
+            }
             return true;
         });
         popupMenu.show();
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = requireActivity().getMenuInflater();
+        inflater.inflate(R.menu.popup_menu, menu);
+    }
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_edit_note) {
+//                repositoryManager.editNote(position);
+            linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
+            Toast.makeText(requireContext(), "Do something with " + repositoryManager.getNote(adapter.getMenuPosition()).getTitle(), Toast.LENGTH_SHORT).show();
+        }
+        if (item.getItemId() == R.id.action_delete_note) {
+            repositoryManager.removeNote(adapter.getMenuPosition());
+            adapter.notifyItemRemoved(adapter.getMenuPosition());
+        }
+        if (item.getItemId() == R.id.action_clear) {
+            repositoryManager.clear();
+            adapter.notifyDataSetChanged();
+        }
+        return super.onContextItemSelected(item);
     }
 
     private void showNoteDetails(Note note) {
@@ -111,7 +149,7 @@ public class NoteListFragment extends Fragment {
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
 
-        adapter = new NoteListAdapter();
+        adapter = new NoteListAdapter(this);
         adapter.setResources(getResources());
         adapter.notifyDataSetChanged();
 

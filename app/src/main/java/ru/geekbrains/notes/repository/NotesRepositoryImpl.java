@@ -7,11 +7,6 @@ import ru.geekbrains.notes.Note;
 public class NotesRepositoryImpl implements RepositoryManager {
 
     @Override
-    public int getNoteListSize() {
-        return RepoMock.NOTES.size();
-    }
-
-    @Override
     public Note getNote(int position) {
         return RepoMock.NOTES.get(position);
     }
@@ -22,8 +17,23 @@ public class NotesRepositoryImpl implements RepositoryManager {
     }
 
     @Override
+    public void editNote(int position, Note note) {
+        RepoMock.NOTES.set(position, note);
+    }
+
+    @Override
     public void removeNote(int position) {
         RepoMock.NOTES.remove(position);
+    }
+
+    @Override
+    public void clear() {
+        RepoMock.NOTES.clear();
+    }
+
+    @Override
+    public int getNoteListSize() {
+        return RepoMock.NOTES.size();
     }
 
     @Override
@@ -31,9 +41,6 @@ public class NotesRepositoryImpl implements RepositoryManager {
         return RepoMock.getNOTES();
     }
 
-    @Override
-    public void editNote(int position, Note note) {
-        RepoMock.NOTES.set(position, note);
-    }
+
 
 }
