@@ -37,13 +37,12 @@ public class EditNoteFragment extends Fragment {
         return fragment;
     }
 
-    Note note;
+    private Note note;
 
-    RepositoryManager repositoryManager = new NotesRepositoryImpl();
+    private final RepositoryManager repositoryManager = new NotesRepositoryImpl();
 
     private TextView titleView;
     private TextView textView;
-    private TextView dateView;
 
     private int colorSelected = Note.COLOR_WHITE;
 
@@ -60,10 +59,7 @@ public class EditNoteFragment extends Fragment {
 
         titleView = view.findViewById(R.id.editText_title);
         textView = view.findViewById(R.id.editText_text);
-        dateView = view.findViewById(R.id.textView_date);
-
-        Date date = new Date();
-        dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(date));
+        TextView dateView = view.findViewById(R.id.textView_date);
 
         if (getArguments() != null) {
             note = getArguments().getParcelable(ARG_NOTE);
@@ -71,10 +67,9 @@ public class EditNoteFragment extends Fragment {
             titleView.setText(note.getTitle());
             textView.setText(note.getText());
             colorSelected = note.getColor();
+            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
         }
-
         initColors(view);
-
     }
 
     private void initColors(View view) {
@@ -114,25 +109,32 @@ public class EditNoteFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        MainActivity mainActivity = (MainActivity)context;
+        MainActivity mainActivity = (MainActivity) context;
         navigation = mainActivity.getNavigation();
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onDestroy() {
+        super.onDestroy();
         if (getArguments() != null) {
             note.setId("id" + repositoryManager.getNoteListSize() + "1");
             note.setTitle(titleView.getText().toString());
             note.setText(textView.getText().toString());
             note.setColor(colorSelected);
+            note.setDate(new Date());
             repositoryManager.editNote(note);
         } else {
             String id = "id" + repositoryManager.getNoteListSize() + "1";
             Note note = new Note(id, titleView.getText().toString(), textView.getText().toString(), colorSelected);
             repositoryManager.addNote(note);
         }
-        navigation.addFragment(new NoteListFragment(),false);
+        navigation.addFragment(new NoteListFragment(), false);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
     }
 
 }

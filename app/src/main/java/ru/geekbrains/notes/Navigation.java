@@ -32,6 +32,10 @@ public class Navigation {
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+            fragmentManager.popBackStack();
+        }
+
         if (!isLandscape) {
             transaction.replace(R.id.fragment_container, fragment);
             if (addToBackStack) {
