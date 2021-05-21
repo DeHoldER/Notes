@@ -27,14 +27,17 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private Note lastOpenedNote;
     private static final String KEY_LAST_NOTE = "KEY_LAST_NOTE";
 
-    NoteListFragment noteListFragment;
-    Fragment fragmentContainer;
+    private NoteListFragment noteListFragment;
+    private Fragment fragmentContainer;
+    private Navigation navigation;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        navigation = new Navigation(getSupportFragmentManager(), getResources());
 
         if (savedInstanceState == null) {
             RepoMock.fillList(6);
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
             if (item.getItemId() == R.id.action_new_note) {
                 if (!(fragmentContainer instanceof EditNoteFragment)) {
-                    addFragment(new EditNoteFragment());
+                    navigation.addFragment(new EditNoteFragment(), true);
                     return true;
                 }
             }
@@ -114,13 +117,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("id1", "Settings", "Заглушка для настроек"));
         switch (id) {
             case R.id.action_goto_note_list:
-                addFragment(noteListFragment);
+                navigation.addFragment(noteListFragment);
                 return true;
             case R.id.action_settings:
-                addFragment(settingsPlugFragment);
+                navigation.addFragment(settingsPlugFragment);
                 return true;
             case R.id.action_about:
-                addFragment(new AboutFragment());
+                navigation.addFragment(new AboutFragment());
                 return true;
         }
         return false;
@@ -167,24 +170,29 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     public void onNoteClicked(Note note) {
         lastOpenedNote = note;
         NoteDetailsFragment detailsFragment = NoteDetailsFragment.newInstance(note);
-        addFragment(detailsFragment);
+//        addFragment(detailsFragment);
+        navigation.addFragment(detailsFragment, true);
     }
 
-    public void addFragment(Fragment fragment) {
-        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
-            fragmentManager.popBackStack();
-        }
+//    public void addFragment(Fragment fragment) {
+//        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+//            fragmentManager.popBackStack();
+//        }
+//
+//        if (!isLandscape) {
+//            fragmentManager.beginTransaction()
+//                    .replace(R.id.fragment_container, fragment)
+//                    .addToBackStack(null)
+//                    .commit();
+//        } else {
+//            fragmentManager.beginTransaction()
+//                    .replace(R.id.detail_container, fragment)
+//                    .commit();
+//        }
+//    }
 
-        if (!isLandscape) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        } else {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.detail_container, fragment)
-                    .commit();
-        }
+    public Navigation getNavigation() {
+        return navigation;
     }
 }
 

@@ -1,5 +1,6 @@
 package ru.geekbrains.notes;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.text.SimpleDateFormat;
 
 import ru.geekbrains.notes.repository.NotesRepositoryImpl;
@@ -20,6 +23,10 @@ import ru.geekbrains.notes.repository.RepositoryManager;
 public class NoteDetailsFragment extends Fragment {
 
     private static final String ARG_NOTE = "ARG_NOTE";
+
+    private Navigation navigation;
+
+    private Resources resources;
 
     public static NoteDetailsFragment newInstance(Note note) {
         NoteDetailsFragment fragment = new NoteDetailsFragment();
@@ -31,6 +38,12 @@ public class NoteDetailsFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity activity = (MainActivity)context;
+        navigation = activity.getNavigation();
+    }
 
     @Nullable
     @Override
@@ -42,10 +55,15 @@ public class NoteDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        MaterialButton button = view.findViewById(R.id.button_edit_note);
         TextView titleView = view.findViewById(R.id.textView_title);
         TextView dateView = view.findViewById(R.id.textView_date);
         TextView textView = view.findViewById(R.id.textView_text);
         ImageView color = view.findViewById(R.id.note_details_color);
+
+        button.setOnClickListener(v -> {
+            navigation.addFragment(new EditNoteFragment());
+        });
 
         Note note = null;
         if (getArguments() != null) {
@@ -59,4 +77,5 @@ public class NoteDetailsFragment extends Fragment {
             dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
         }
     }
+
 }
