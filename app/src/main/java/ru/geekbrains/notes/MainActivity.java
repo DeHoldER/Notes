@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private Fragment fragmentContainer;
     private Navigation navigation;
 
+    private Publisher publisher = new Publisher();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
         navigation = new Navigation(getSupportFragmentManager(), getResources());
 
+        // генерим несколько заметок для проверки
         if (savedInstanceState == null) {
             RepoMock.fillList(6);
         }

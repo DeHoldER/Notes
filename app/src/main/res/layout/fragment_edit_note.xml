@@ -12,8 +12,9 @@
         android:orientation="vertical"
         tools:context=".NoteDetailsFragment">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editText_title"
+            android:hint="@string/description_title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/note_detail_margin"
@@ -21,13 +22,6 @@
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/note_title_detail_text_size"
             tools:text="Title" />
-
-        <TextView
-            android:id="@+id/description_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/description_title_text"
-            android:textSize="@dimen/note_description_text_size" />
 
         <TextView
             android:id="@+id/textView_date"
@@ -111,21 +105,15 @@
             android:text="@string/description_color_text"
             android:textSize="@dimen/note_description_text_size" />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editText_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/note_detail_margin"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/note_text_size"
+            android:hint="@string/description_text_text"
             tools:text="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text" />
-
-        <TextView
-            android:id="@+id/description_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/description_text_text"
-            android:textSize="@dimen/note_description_text_size" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

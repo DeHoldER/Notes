@@ -68,7 +68,7 @@ public class EditNoteFragment extends Fragment {
             textView.setText(note.getText());
             colorSelected = note.getColor();
             dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
-        }
+        } else dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(new Date()));
         initColors(view);
     }
 
@@ -114,8 +114,8 @@ public class EditNoteFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDetach() {
+        super.onDetach();
         if (getArguments() != null) {
             note.setId("id" + repositoryManager.getNoteListSize() + "1");
             note.setTitle(titleView.getText().toString());
@@ -129,12 +129,6 @@ public class EditNoteFragment extends Fragment {
             repositoryManager.addNote(note);
         }
         navigation.addFragment(new NoteListFragment(), false);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
     }
 
 }
