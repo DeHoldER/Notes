@@ -110,14 +110,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             }
             return false;
         });
-
     }
 
     private boolean navigateFragment(int id) {
         NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("id1", "Settings", "Заглушка для настроек"));
         switch (id) {
             case R.id.action_goto_note_list:
-                navigation.addFragment(noteListFragment);
+                navigation.addFragment(noteListFragment, false);
                 return true;
             case R.id.action_settings:
                 navigation.addFragment(settingsPlugFragment);

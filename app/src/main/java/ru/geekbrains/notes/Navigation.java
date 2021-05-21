@@ -37,15 +37,10 @@ public class Navigation {
             if (addToBackStack) {
                 transaction.addToBackStack(null);
             }
-            transaction.commit();
-
         } else {
             transaction.replace(R.id.detail_container, fragment);
-            if (addToBackStack) {
-                transaction.addToBackStack(null);
-            }
-            transaction.commit();
         }
+        transaction.commit();
     }
 
     public void addFragment(Fragment fragment) {

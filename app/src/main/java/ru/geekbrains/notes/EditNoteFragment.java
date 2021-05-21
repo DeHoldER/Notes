@@ -23,17 +23,21 @@ import ru.geekbrains.notes.repository.RepositoryManager;
 
 public class EditNoteFragment extends Fragment {
 
-//    private static final String ARG_NOTE = "ARG_NOTE";
-//
-//    public static NoteDetailsFragment newInstance(Note note) {
-//        NoteDetailsFragment fragment = new NoteDetailsFragment();
-//
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(ARG_NOTE, note);
-//
-//        fragment.setArguments(bundle);
-//        return fragment;
-//    }
+    private static final String ARG_NOTE = "ARG_NOTE";
+
+    private Navigation navigation;
+
+    public static EditNoteFragment newInstance(Note note) {
+        EditNoteFragment fragment = new EditNoteFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_NOTE, note);
+
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    Note note;
 
     RepositoryManager repositoryManager = new NotesRepositoryImpl();
 
@@ -61,6 +65,31 @@ public class EditNoteFragment extends Fragment {
         Date date = new Date();
         dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(date));
 
+        if (getArguments() != null) {
+            note = getArguments().getParcelable(ARG_NOTE);
+
+            titleView.setText(note.getTitle());
+            textView.setText(note.getText());
+            colorSelected = note.getColor();
+        }
+
+        initColors(view);
+
+    }
+
+    private void initColors(View view) {
+        ImageView currentColor = view.findViewById(R.id.edit_color_current);
+
+        if (note != null) {
+            currentColor.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(note.getColor()));
+        } else
+            currentColor.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(Note.COLOR_WHITE));
+
+        currentColor.setOnClickListener(v -> {
+            currentColor.setVisibility(View.GONE);
+            view.findViewById(R.id.colors_container).setVisibility(View.VISIBLE);
+        });
+
         List<ImageView> colors = new ArrayList<>();
 
         colors.add(view.findViewById(R.id.edit_color_white));
@@ -74,42 +103,36 @@ public class EditNoteFragment extends Fragment {
             int finalI = i;
             // ставим листнеры на вьюшки с кружочками
             colors.get(i).setOnClickListener(v -> {
-                if (colorSelected != finalI) {
-                    colorSelected = finalI;
-                    for (int j = 0; j < colors.size(); j++) {
-                        if (j != finalI) {
-                            colors.get(j).setVisibility(ImageView.GONE);
-                        }
-                    }
-                } else {
-                    for (int j = 0; j < colors.size(); j++) {
-                        if (j != finalI) {
-                            colors.get(j).setVisibility(ImageView.VISIBLE);
-                        }
-                    }
-                }
+                currentColor.setVisibility(View.VISIBLE);
+                colorSelected = finalI;
+                view.findViewById(R.id.colors_container).setVisibility(View.GONE);
+                currentColor.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(colorSelected));
             });
         }
+    }
 
-//        colorWhite.setOnClickListener(v -> {
-//            colorSelected = Note.COLOR_WHITE;
-//            for (int i = 0; i < 5; i++) {
-//                colors.get(i).setVisibility(ImageView.VISIBLE);
-//            }
-//        });
-
-//        Note note = getArguments().getParcelable(ARG_NOTE);
-//        titleView.setText(note.getTitle());
-//        textView.setText(note.getText());
-//        dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
-
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity mainActivity = (MainActivity)context;
+        navigation = mainActivity.getNavigation();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        String id = "id" + repositoryManager.getNoteListSize();
-        Note note = new Note(id, titleView.getText().toString(), textView.getText().toString(), colorSelected);
-        repositoryManager.addNote(note);
+        if (getArguments() != null) {
+            note.setId("id" + repositoryManager.getNoteListSize() + "1");
+            note.setTitle(titleView.getText().toString());
+            note.setText(textView.getText().toString());
+            note.setColor(colorSelected);
+            repositoryManager.editNote(note);
+        } else {
+            String id = "id" + repositoryManager.getNoteListSize() + "1";
+            Note note = new Note(id, titleView.getText().toString(), textView.getText().toString(), colorSelected);
+            repositoryManager.addNote(note);
+        }
+        navigation.addFragment(new NoteListFragment(),false);
     }
+
 }

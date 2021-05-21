@@ -28,6 +28,8 @@ public class NoteDetailsFragment extends Fragment {
 
     private Resources resources;
 
+    Note note;
+
     public static NoteDetailsFragment newInstance(Note note) {
         NoteDetailsFragment fragment = new NoteDetailsFragment();
 
@@ -62,10 +64,9 @@ public class NoteDetailsFragment extends Fragment {
         ImageView color = view.findViewById(R.id.note_details_color);
 
         button.setOnClickListener(v -> {
-            navigation.addFragment(new EditNoteFragment());
+            navigation.addFragment(EditNoteFragment.newInstance(note));
         });
 
-        Note note = null;
         if (getArguments() != null) {
             note = getArguments().getParcelable(ARG_NOTE);
         }

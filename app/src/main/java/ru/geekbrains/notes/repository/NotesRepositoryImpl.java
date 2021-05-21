@@ -17,8 +17,9 @@ public class NotesRepositoryImpl implements RepositoryManager {
     }
 
     @Override
-    public void editNote(int position, Note note) {
-        RepoMock.NOTES.set(position, note);
+    public void editNote(Note note) {
+
+        RepoMock.NOTES.set(RepoMock.NOTES.indexOf(note), note);
     }
 
     @Override

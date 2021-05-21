@@ -45,7 +45,16 @@
             android:text="@string/description_date_text"
             android:textSize="@dimen/note_description_text_size" />
 
+        <ImageView
+            android:id="@+id/edit_color_current"
+            android:layout_width="@dimen/pic_size"
+            android:layout_height="@dimen/pic_size"
+            android:layout_margin="@dimen/margin_note_item"
+            app:srcCompat="@drawable/ic_color_white" />
+
         <LinearLayout
+            android:id="@+id/colors_container"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/note_detail_margin"
@@ -63,7 +72,6 @@
                 android:layout_width="@dimen/pic_size"
                 android:layout_height="@dimen/pic_size"
                 android:layout_margin="@dimen/margin_note_item"
-                android:visibility="gone"
                 app:srcCompat="@drawable/ic_color_green" />
 
             <ImageView
@@ -71,7 +79,6 @@
                 android:layout_width="@dimen/pic_size"
                 android:layout_height="@dimen/pic_size"
                 android:layout_margin="@dimen/margin_note_item"
-                android:visibility="gone"
                 app:srcCompat="@drawable/ic_color_red" />
 
             <ImageView
@@ -79,7 +86,6 @@
                 android:layout_width="@dimen/pic_size"
                 android:layout_height="@dimen/pic_size"
                 android:layout_margin="@dimen/margin_note_item"
-                android:visibility="gone"
                 app:srcCompat="@drawable/ic_color_blue" />
 
             <ImageView
@@ -87,7 +93,6 @@
                 android:layout_width="@dimen/pic_size"
                 android:layout_height="@dimen/pic_size"
                 android:layout_margin="@dimen/margin_note_item"
-                android:visibility="gone"
                 app:srcCompat="@drawable/ic_color_yellow" />
 
             <ImageView
@@ -95,7 +100,6 @@
                 android:layout_width="@dimen/pic_size"
                 android:layout_height="@dimen/pic_size"
                 android:layout_margin="@dimen/margin_note_item"
-                android:visibility="gone"
                 app:srcCompat="@drawable/ic_color_purple" />
 
         </LinearLayout>
