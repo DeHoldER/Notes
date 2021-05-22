@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1055004573154",
+    "project_id": "fox-notes-2c04c",
+    "storage_bucket": "fox-notes-2c04c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055004573154:android:66827e647eb203ece44dbb",
+        "android_client_info": {
+          "package_name": "ru.foxsoft.fastnotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055004573154-muiaidgbej7m033j1vnlk9vpp58vt5li.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.foxsoft.fastnotes",
+            "certificate_hash": "28c0a6e46b47b202c895c1393efd9e59a49c0c6d"
+          }
+        },
+        {
+          "client_id": "1055004573154-l8n70vlsunfsu2jmcb6q9scd7rti8q3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuquzr_m9L6axhoBjpVfX8i_GBmWbjREc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055004573154-l8n70vlsunfsu2jmcb6q9scd7rti8q3q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,19 +1,22 @@
 plugins {
     id 'com.android.application'
 }
+    apply plugin: 'com.google.gms.google-services'
+
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "ru.geekbrains.notes"
+        applicationId "ru.foxsoft.fastnotes"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {
@@ -26,6 +29,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    signingConfigs {
+        debug {
+            storeFile file('./../key.jks')
+            storePassword '3216732167'
+            keyAlias 'alias'
+            keyPassword '3216732167'
+        }
+    }
 }
 
 dependencies {
@@ -36,6 +48,10 @@ dependencies {
 
     def fragment_version = "1.3.3"
     implementation "androidx.fragment:fragment:$fragment_version"
+
+    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-firestore'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.+'
