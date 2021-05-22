@@ -1,14 +1,17 @@
 package ru.geekbrains.notes;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,15 +20,56 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import ru.geekbrains.notes.repository.NotesRepositoryImpl;
+import ru.geekbrains.notes.repository.RepositoryManager;
 
 public class NoteListFragment extends Fragment {
+
+    private OnNoteClicked onNoteClicked;
+    private NoteListAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
+    private RepositoryManager repositoryManager;
+    private RecyclerView recyclerView;
+    private Publisher publisher;
+    private Navigation navigation;
 
     public interface OnNoteClicked {
         void onNoteClicked(Note note);
     }
 
-    private OnNoteClicked onNoteClicked;
+    // При создании фрагмента укажем его макет
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.note_list_fragment, container, false);
+        Context context = view.getContext();
+
+        repositoryManager = new NotesRepositoryImpl();
+
+        initView(view, context);
+
+        // Установим слушателя
+        adapter.SetOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemLongClick(View v, int position, View itemView) {
+//                showPopupMenu(v, position);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    itemView.showContextMenu(5, 10);
+                }
+            }
+
+            @Override
+            public void onItemClick(View view, int position) {
+                showNoteDetails(repositoryManager.getNote(position));
+            }
+
+        });
+        return view;
+    }
+
+//    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -34,110 +78,109 @@ public class NoteListFragment extends Fragment {
         if (context instanceof OnNoteClicked) {
             onNoteClicked = (OnNoteClicked) context;
         }
+        MainActivity mainActivity = (MainActivity)context;
+
+        publisher = mainActivity.getPublisher();
+        navigation = mainActivity.getNavigation();
+
     }
 
     @Override
     public void onDetach() {
         onNoteClicked = null;
+        publisher = null;
         super.onDetach();
     }
 
-    // При создании фрагмента укажем его макет
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        return inflater.inflate(R.layout.fragment_note_list, container, false);
-
-        View view = inflater.inflate(R.layout.note_list_recycler_view, container, false);
-
-        Context context = view.getContext();
-        RecyclerView recyclerView = (RecyclerView) view;
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        NoteListAdapter adapter = new NoteListAdapter();
-        recyclerView.setAdapter(adapter);
-
-        List<Note> dataList = new NotesRepository().getNoteList();
-
-        recyclerView.setAdapter(adapter);
-        adapter.addData(dataList);
-        adapter.setResources(getResources());
-        adapter.notifyDataSetChanged();
-
-        // Установим слушателя
-        adapter.SetOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                showNoteDetails(dataList.get(position).getNote());
-            }
-        });
-        return view;
+    public void onResume() {
+        super.onResume();
+        recyclerView.scrollToPosition(repositoryManager.getNoteListSize());
     }
 
-    // вызывается после создания макета фрагмента, здесь мы проинициализируем список
+//    private void showPopupMenu(View view, int position) {
+//        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+//        requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+//
+//        popupMenu.setOnMenuItemClickListener(item -> {
+//            if (item.getItemId() == R.id.action_edit_note) {
+////                repositoryManager.editNote(position);
+//                linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
+//                Toast.makeText(requireContext(), "Do something with " + repositoryManager.getNote(position).getTitle(), Toast.LENGTH_SHORT).show();
+//            }
+//            if (item.getItemId() == R.id.action_delete_note) {
+//                repositoryManager.removeNote(position);
+//                adapter.notifyItemRemoved(position);
+//            }
+//            if (item.getItemId() == R.id.action_clear) {
+//                repositoryManager.clear();
+//                adapter.notifyDataSetChanged();
+//            }
+//            return true;
+//        });
+//        popupMenu.show();
+//    }
+
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-//        initList(view);
-
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = requireActivity().getMenuInflater();
+        inflater.inflate(R.menu.popup_menu, menu);
     }
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        final int position = adapter.getMenuPosition();
+        if (item.getItemId() == R.id.action_edit_note) {
 
-    private void initPopupMenu(View view, Note note) {
-        view.setOnLongClickListener((View.OnLongClickListener) v -> {
-            PopupMenu popupMenu = new PopupMenu(requireContext(), v);
+            navigation.addFragment(EditNoteFragment.newInstance(repositoryManager.getNote(position)));
+//            publisher.subscribe(new Observer() {
+//                @Override
+//                public void updateNoteData(Note note) {
+//                int position = 0;
+//
+//                    for (int i = 0; i < repositoryManager.getNoteListSize(); i++) {
+//                        if (repositoryManager.getNote(i).equals(note)) {
+//                            position = i;
+//                        }
+//                    }
+//
+//                    repositoryManager.editNote(note);
+//                    adapter.notifyItemChanged(position);
+//                    recyclerView.smoothScrollToPosition(repositoryManager.getNoteListSize() - 1);
+//                }
+//            });
 
-            requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
-
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.action_do_something) {
-                        Toast.makeText(requireContext(), "Do something with " + note.getTitle(), Toast.LENGTH_SHORT).show();
-                    }
-                    if (item.getItemId() == R.id.action_delete_note) {
-                        Toast.makeText(requireContext(), "Delete note " + note.getTitle(), Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                }
-            });
-            popupMenu.show();
-            return true;
-
-
-        });
-
-
-    }
-
-    // создаём список заметок на экране из массива
-    private void initList(View view) {
-        List<Note> noteList = new NotesRepository().getNoteList();
-        LinearLayout noteListView = (LinearLayout) view;
-
-        // В этом цикле создаём элементы View, заполняем заголовки, и добавляем на экран.
-        // Кроме того, создаём обработку касания на элемент
-        for (Note note : noteList) {
-
-            View noteView = LayoutInflater.from(requireContext())
-                    .inflate(R.layout.item_note_title_deprecated, noteListView, false);
-
-
-            TextView noteTitle = noteView.findViewById(R.id.note_title);
-            noteTitle.setText(note.getTitle());
-
-            noteView.setOnClickListener(v -> showNoteDetails(note));
-            initPopupMenu(noteView, note);
-
-            noteListView.addView(noteView);
-
+            linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
         }
+        if (item.getItemId() == R.id.action_delete_note) {
+            repositoryManager.removeNote(adapter.getMenuPosition());
+            adapter.notifyItemRemoved(adapter.getMenuPosition());
+        }
+        if (item.getItemId() == R.id.action_clear) {
+            repositoryManager.clear();
+            adapter.notifyDataSetChanged();
+        }
+        return super.onContextItemSelected(item);
     }
 
     private void showNoteDetails(Note note) {
-
         if (onNoteClicked != null) {
             onNoteClicked.onNoteClicked(note);
         }
-
     }
 
+    private void initView(View view, Context context) {
+        linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
+
+        adapter = new NoteListAdapter(this);
+        adapter.setResources(getResources());
+        adapter.notifyDataSetChanged();
+
+        recyclerView = (RecyclerView) view;
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(adapter);
+    }
 }
