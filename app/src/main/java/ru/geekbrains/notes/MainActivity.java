@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             if (item.getItemId() == R.id.action_new_note) {
                 if (!(fragmentContainer instanceof EditNoteFragment)) {
                     navigation.addFragment(new EditNoteFragment(), true);
+
                     return true;
                 }
             }
@@ -195,6 +196,10 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     public Navigation getNavigation() {
         return navigation;
+    }
+
+    public Publisher getPublisher() {
+        return publisher;
     }
 }
 
