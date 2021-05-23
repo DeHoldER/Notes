@@ -5,13 +5,13 @@ import java.util.List;
 
 import ru.geekbrains.notes.Note;
 
-public class RepoMock {
+public class Mock {
 
     // Временное хранилище (эмулятор базы данных/сервера)
 
-    public static List<Note> NOTES = new ArrayList<>();
+    private List<Note> NOTES = new ArrayList<>();
 
-    public static void fillList(int noteNumber) {
+    public void fillList(int noteNumber) {
 
         NOTES.add(new Note("id1", "Заметка № 1",
                 "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
@@ -41,7 +41,7 @@ public class RepoMock {
         }
     }
 
-    public static List<Note> getNOTES(){
-        return NOTES;
-    }
+//    public static List<Note> getNOTES(){
+//        return NOTES;
+//    }
 }

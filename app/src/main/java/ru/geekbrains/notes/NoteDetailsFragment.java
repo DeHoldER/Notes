@@ -17,9 +17,6 @@ import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;
 
-import ru.geekbrains.notes.repository.NotesRepositoryImpl;
-import ru.geekbrains.notes.repository.RepositoryManager;
-
 public class NoteDetailsFragment extends Fragment {
 
     private static final String ARG_NOTE = "ARG_NOTE";

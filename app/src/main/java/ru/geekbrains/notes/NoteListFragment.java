@@ -6,13 +6,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,15 +17,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ru.geekbrains.notes.repository.NotesRepositoryImpl;
-import ru.geekbrains.notes.repository.RepositoryManager;
+import ru.geekbrains.notes.repository.LocalNotesRepository;
 
 public class NoteListFragment extends Fragment {
 
     private OnNoteClicked onNoteClicked;
     private NoteListAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-    private RepositoryManager repositoryManager;
+    private LocalNotesRepository localRepository;
     private RecyclerView recyclerView;
     private Publisher publisher;
     private Navigation navigation;
@@ -42,8 +38,6 @@ public class NoteListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.note_list_fragment, container, false);
         Context context = view.getContext();
-
-        repositoryManager = new NotesRepositoryImpl();
 
         initView(view, context);
 
@@ -59,7 +53,7 @@ public class NoteListFragment extends Fragment {
 
             @Override
             public void onItemClick(View view, int position) {
-                showNoteDetails(repositoryManager.getNote(position));
+                showNoteDetails(localRepository.getNote(position));
             }
 
         });
@@ -82,6 +76,7 @@ public class NoteListFragment extends Fragment {
 
         publisher = mainActivity.getPublisher();
         navigation = mainActivity.getNavigation();
+        localRepository = mainActivity.getLocalRepository();
 
     }
 
@@ -95,7 +90,7 @@ public class NoteListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        recyclerView.scrollToPosition(repositoryManager.getNoteListSize());
+        recyclerView.scrollToPosition(localRepository.getNoteListSize());
     }
 
 //    private void showPopupMenu(View view, int position) {
@@ -104,7 +99,7 @@ public class NoteListFragment extends Fragment {
 //
 //        popupMenu.setOnMenuItemClickListener(item -> {
 //            if (item.getItemId() == R.id.action_edit_note) {
-////                repositoryManager.editNote(position);
+////                localRepository.editNote(position);
 //                linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
 //                Toast.makeText(requireContext(), "Do something with " + repositoryManager.getNote(position).getTitle(), Toast.LENGTH_SHORT).show();
 //            }
@@ -133,7 +128,9 @@ public class NoteListFragment extends Fragment {
         final int position = adapter.getMenuPosition();
         if (item.getItemId() == R.id.action_edit_note) {
 
-            navigation.addFragment(EditNoteFragment.newInstance(repositoryManager.getNote(position)));
+            navigation.addFragment(EditNoteFragment.newInstance(localRepository.getNote(position)));
+
+
 //            publisher.subscribe(new Observer() {
 //                @Override
 //                public void updateNoteData(Note note) {
@@ -151,14 +148,14 @@ public class NoteListFragment extends Fragment {
 //                }
 //            });
 
-            linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
+            linearLayoutManager.scrollToPosition(localRepository.getNoteListSize());
         }
         if (item.getItemId() == R.id.action_delete_note) {
-            repositoryManager.removeNote(adapter.getMenuPosition());
+            localRepository.removeNote(adapter.getMenuPosition());
             adapter.notifyItemRemoved(adapter.getMenuPosition());
         }
         if (item.getItemId() == R.id.action_clear) {
-            repositoryManager.clear();
+            localRepository.clear();
             adapter.notifyDataSetChanged();
         }
         return super.onContextItemSelected(item);

@@ -36,6 +36,14 @@ public class Note implements Parcelable {
         this.color = color;
     }
 
+    public Note(String id, String title, String text, int color, Date date) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.date = date;
+        this.color = color;
+    }
+
     protected Note(Parcel in) {
         title = in.readString();
         text = in.readString();
@@ -55,6 +63,8 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
+
+
 
     @Override
     public int describeContents() {

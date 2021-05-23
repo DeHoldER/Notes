@@ -11,8 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ru.geekbrains.notes.repository.NotesRepositoryImpl;
-import ru.geekbrains.notes.repository.RepositoryManager;
+import ru.geekbrains.notes.repository.LocalNotesRepository;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
@@ -20,7 +19,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHo
 
     private OnItemClickListener itemClickListener; // Слушатель будет устанавливаться извне
 
-    RepositoryManager repositoryManager = new NotesRepositoryImpl();
+    LocalNotesRepository localRepository;
 
     private final Fragment fragment;
 
@@ -32,6 +31,10 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHo
 
     public NoteListAdapter(Fragment fragment) {
         this.fragment = fragment;
+        MainActivity mainActivity = (MainActivity)fragment.getActivity();
+        if (mainActivity != null) {
+            localRepository = mainActivity.getLocalRepository();
+        }
     }
 
     public void setResources(Resources resources) {
@@ -46,12 +49,12 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(repositoryManager.getNote(position));
+        holder.bind(localRepository.getNote(position));
     }
 
     @Override
     public int getItemCount() {
-        return repositoryManager.getNoteListSize();
+        return localRepository.getNoteListSize();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

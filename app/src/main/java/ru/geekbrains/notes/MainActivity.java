@@ -2,7 +2,6 @@ package ru.geekbrains.notes;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,7 +16,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
-import ru.geekbrains.notes.repository.RepoMock;
+import ru.geekbrains.notes.repository.LocalNotesRepository;
+import ru.geekbrains.notes.repository.Mock;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
@@ -29,10 +29,11 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     private NoteListFragment noteListFragment;
     private Fragment fragmentContainer;
+
     private Navigation navigation;
+    private LocalNotesRepository localRepository;
 
     private Publisher publisher = new Publisher();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +41,11 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         setContentView(R.layout.activity_main);
 
         navigation = new Navigation(getSupportFragmentManager(), getResources());
+        localRepository = new LocalNotesRepository();
 
         // генерим несколько заметок для проверки
         if (savedInstanceState == null) {
-            RepoMock.fillList(6);
+            localRepository.fillList(3);
         }
 
         initFields(savedInstanceState);
@@ -200,6 +202,10 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     public Publisher getPublisher() {
         return publisher;
+    }
+
+    public LocalNotesRepository getLocalRepository() {
+        return localRepository;
     }
 }
 
