@@ -2,6 +2,7 @@ package ru.geekbrains.notes;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.widget.Adapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -44,9 +46,9 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         localRepository = new LocalNotesRepository();
 
         // генерим несколько заметок для проверки
-        if (savedInstanceState == null) {
-            localRepository.fillList(3);
-        }
+//        if (savedInstanceState == null) {
+//            localRepository.fillList(3);
+//        }
 
         initFields(savedInstanceState);
         loadList();
@@ -206,6 +208,10 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     public LocalNotesRepository getLocalRepository() {
         return localRepository;
+    }
+
+    public void throwListView(NoteListAdapter adapter, RecyclerView recyclerView) {
+        localRepository.setAdapter(adapter, recyclerView);
     }
 }
 

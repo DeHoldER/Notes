@@ -55,6 +55,7 @@ public class NoteDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         MaterialButton button = view.findViewById(R.id.button_edit_note);
+        TextView idView = view.findViewById(R.id.textView_id);
         TextView titleView = view.findViewById(R.id.textView_title);
         TextView dateView = view.findViewById(R.id.textView_date);
         TextView textView = view.findViewById(R.id.textView_text);
@@ -71,8 +72,9 @@ public class NoteDetailsFragment extends Fragment {
         if (note != null) {
             color.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(note.getColor()));
             titleView.setText(note.getTitle());
+            idView.setText(note.getId());
             textView.setText(note.getText());
-            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
+            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  HH:mm:ss").format(note.getDate()));
         }
     }
 

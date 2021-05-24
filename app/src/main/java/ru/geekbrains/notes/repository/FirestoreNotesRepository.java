@@ -1,79 +1,46 @@
 package ru.geekbrains.notes.repository;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import ru.geekbrains.notes.Note;
 
-public class FirestoreNotesRepository implements RepositoryHandler {
+public class FirestoreNotesRepository {
 
     private final FirebaseFirestore FIRE_STORE = FirebaseFirestore.getInstance();
 
     private final static String NOTES_COLLECTION = "notes";
     private final static String TITLE = "title";
     private final static String TEXT = "text";
-    private final static String CREATED_AT = "CreatedAt";
+    private final static String CREATED_AT = "createdAt";
     private final static String COLOR = "color";
+    private final static String ID = "id";
 
-    @Override
-    public Note getNote(int position) {
-        return null;
-    }
 
-    @Override
-    public void addNote(Note note) {
-
-    }
-
-    @Override
-    public void editNote(Note note) {
-
-    }
-
-    @Override
-    public void removeNote(int position) {
-
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public int getNoteListSize() {
-        return 0;
-    }
-
-    @Override
-    public List<Note> getNoteList() {
-        return null;
-    }
-
-    @Override
-    public void addNote(Callback<Note> callback) {
-
-    }
-
-    @Override
     public void getNoteList(Callback<List<Note>> callback) {
         FIRE_STORE.collection(NOTES_COLLECTION)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                         if (task.isSuccessful()) {
-
                             ArrayList<Note> tmp = new ArrayList<>();
 
                             List<DocumentSnapshot> docs = task.getResult().getDocuments();
@@ -87,6 +54,7 @@ public class FirestoreNotesRepository implements RepositoryHandler {
                                 tmp.add(new Note(id, title, text, color, date));
                             }
 
+                            tmp.sort(Comparator.comparing(Note::getDate));
                             callback.onSuccess(tmp);
 
 
@@ -95,6 +63,48 @@ public class FirestoreNotesRepository implements RepositoryHandler {
                         }
                     }
                 });
+    }
+
+    public void addNote(Note note, Callback<Note> callback) {
+
+        HashMap<String, Object> data = new HashMap<>();
+
+        data.put(TITLE, note.getTitle());
+        data.put(TEXT, note.getText());
+        data.put(CREATED_AT, note.getDate());
+        data.put(COLOR, note.getColor());
+        data.put(ID, note.getId());
+
+        FIRE_STORE.collection(NOTES_COLLECTION)
+                .document(note.getId())
+                .set(data)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(note);
+
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+
+
+//                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentReference> task) {
+//
+//                        if (task.isSuccessful()) {
+//                            note.setId(task.getResult().getId());
+//                            callback.onSuccess(note);
+//
+//                        } else {
+//                            callback.onError(task.getException());
+//                        }
+//
+//                    }
+//                });
     }
 
 

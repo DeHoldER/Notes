@@ -28,6 +28,7 @@ public class NoteListFragment extends Fragment {
     private RecyclerView recyclerView;
     private Publisher publisher;
     private Navigation navigation;
+    private MainActivity mainActivity;
 
     public interface OnNoteClicked {
         void onNoteClicked(Note note);
@@ -72,7 +73,7 @@ public class NoteListFragment extends Fragment {
         if (context instanceof OnNoteClicked) {
             onNoteClicked = (OnNoteClicked) context;
         }
-        MainActivity mainActivity = (MainActivity)context;
+        mainActivity = (MainActivity)context;
 
         publisher = mainActivity.getPublisher();
         navigation = mainActivity.getNavigation();
@@ -91,6 +92,7 @@ public class NoteListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         recyclerView.scrollToPosition(localRepository.getNoteListSize());
+        mainActivity.throwListView(adapter, recyclerView);
     }
 
 //    private void showPopupMenu(View view, int position) {
@@ -179,5 +181,8 @@ public class NoteListFragment extends Fragment {
         recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
+
+        MainActivity mainActivity = (MainActivity)context;
+//        mainActivity.throwListView(adapter, recyclerView);
     }
 }

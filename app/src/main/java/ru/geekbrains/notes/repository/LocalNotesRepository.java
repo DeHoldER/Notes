@@ -1,60 +1,91 @@
 package ru.geekbrains.notes.repository;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.geekbrains.notes.Note;
+import ru.geekbrains.notes.NoteListAdapter;
 
-public class LocalNotesRepository implements RepositoryHandler {
+public class LocalNotesRepository {
 
     private List<Note> NOTES;
+    private final FirestoreNotesRepository firestoreNotesRepository;
+    private NoteListAdapter adapter;
+    private RecyclerView recyclerView;
+
+    public void setAdapter(NoteListAdapter adapter, RecyclerView recyclerView) {
+        this.adapter = adapter;
+        this.recyclerView = recyclerView;
+    }
 
     public LocalNotesRepository() {
         NOTES = new ArrayList<>();
+        firestoreNotesRepository = new FirestoreNotesRepository();
+        firestoreNotesRepository.getNoteList(new Callback<List<Note>>() {
+            @Override
+            public void onSuccess(List<Note> value) {
+                NOTES = value;
+                adapter.notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(NOTES.size());
+            }
+            @Override
+            public void onError(Throwable error) {
+                error.getCause();
+            }
+        });
     }
 
-    @Override
     public Note getNote(int position) {
         return NOTES.get(position);
     }
 
-    @Override
+//    public void addNote(Note note) {
+//        NOTES.add(note);
+//    }
+
     public void addNote(Note note) {
-        NOTES.add(note);
+        firestoreNotesRepository.addNote(note, new Callback<Note>() {
+            @Override
+            public void onSuccess(Note value) {
+                NOTES.add(value);
+                adapter.notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(NOTES.size());
+            }
+            @Override
+            public void onError(Throwable error) {
+                error.getCause();
+            }
+        });
+
     }
 
-    @Override
     public void editNote(Note note) {
 
         NOTES.set(NOTES.indexOf(note), note);
     }
 
-    @Override
     public void removeNote(int position) {
         NOTES.remove(position);
     }
 
-    @Override
     public void clear() {
         NOTES.clear();
     }
 
-    @Override
     public int getNoteListSize() {
         return NOTES.size();
     }
 
-    @Override
     public List<Note> getNoteList() {
         return NOTES;
     }
 
-    @Override
-    public void addNote(Callback<Note> callback) {
+//    public void addNote(Callback<Note> callback) {
+//
+//    }
 
-    }
-
-    @Override
     public void getNoteList(Callback<List<Note>> callback) {
 
     }
