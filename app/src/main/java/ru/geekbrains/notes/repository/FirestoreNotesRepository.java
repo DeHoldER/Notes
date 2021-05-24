@@ -120,8 +120,27 @@ public class FirestoreNotesRepository {
                         callback.onError(task.getException());
                     }
                 });
+    }
+
+    public void clearRepository(List<Note> noteList, Callback<Note> callback) {
+
+        for (Note note : noteList) {
+            FIRE_STORE.collection(NOTES_COLLECTION)
+                    .document(note.getId())
+                    .delete()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(note);
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    });
+        }
+
 
     }
+
+
 
 
 }

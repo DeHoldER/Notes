@@ -31,7 +31,7 @@ public class LocalNotesRepository {
             @Override
             public void onSuccess(List<Note> value) {
                 NOTES = value;
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemRangeInserted(0, NOTES.size());
                 recyclerView.smoothScrollToPosition(NOTES.size());
             }
             @Override
@@ -51,7 +51,7 @@ public class LocalNotesRepository {
             @Override
             public void onSuccess(Note value) {
                 NOTES.add(value);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemInserted(NOTES.size());
                 recyclerView.smoothScrollToPosition(NOTES.size());
             }
             @Override
@@ -68,7 +68,6 @@ public class LocalNotesRepository {
             public void onSuccess(Note value) {
                 NOTES.set(NOTES.indexOf(note), note);
             }
-
             @Override
             public void onError(Throwable error) {
                 error.getCause();
@@ -81,9 +80,8 @@ public class LocalNotesRepository {
             @Override
             public void onSuccess(Note value) {
                 NOTES.remove(position);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemRemoved(position);
             }
-
             @Override
             public void onError(Throwable error) {
                 error.getCause();
@@ -92,7 +90,17 @@ public class LocalNotesRepository {
     }
 
     public void clear() {
-        NOTES.clear();
+        firestoreNotesRepository.clearRepository(NOTES, new Callback<Note>() {
+            @Override
+            public void onSuccess(Note value) {
+                NOTES.remove(value);
+                adapter.notifyItemRemoved(0);
+            }
+            @Override
+            public void onError(Throwable error) {
+                error.getCause();
+            }
+        });
     }
 
     public int getNoteListSize() {
@@ -104,34 +112,34 @@ public class LocalNotesRepository {
     }
 
 
-//    public void fillList(int noteNumber) {
-//
-//        NOTES.add(new Note("id1", "Заметка № 1",
-//                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-//                Note.COLOR_GREEN));
-//        NOTES.add(new Note("id2", "Заметка № 2",
-//                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-//                Note.COLOR_GREEN));
-//        NOTES.add(new Note("id3", "Заметка № 3",
-//                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-//                Note.COLOR_BLUE));
-//        NOTES.add(new Note("id4", "Заметка № 4",
-//                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-//                Note.COLOR_YELLOW));
-//        NOTES.add(new Note("id5", "Заметка № 5",
-//                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-//                Note.COLOR_PURPLE));
-//
-//        for (int i = 6; i < noteNumber + 1; i++) {
-//            String id = "id" + i;
-//            String title = "Заметка № " + i;
-//            StringBuilder text = new StringBuilder();
-//
-//            for (int j = 0; j < i; j++) {
-//                text.append("Lorem ipsum ");
-//            }
-//            NOTES.add(new Note(id, title, text.toString()));
-//        }
-//    }
+    public void fillList(int numberOfAdditionallyGeneratedNotes) {
+
+        addNote(new Note("id1", "Заметка № 1",
+                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
+                Note.COLOR_GREEN));
+        addNote(new Note("id2", "Заметка № 2",
+                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
+                Note.COLOR_GREEN));
+        addNote(new Note("id3", "Заметка № 3",
+                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
+                Note.COLOR_BLUE));
+        addNote(new Note("id4", "Заметка № 4",
+                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
+                Note.COLOR_YELLOW));
+        addNote(new Note("id5", "Заметка № 5",
+                "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
+                Note.COLOR_PURPLE));
+
+        for (int i = 6; i < numberOfAdditionallyGeneratedNotes+1; i++) {
+            String id = "id" + i;
+            String title = "Заметка № " + i;
+            StringBuilder text = new StringBuilder();
+
+            for (int j = 0; j < i; j++) {
+                text.append("Lorem ipsum ");
+            }
+            addNote(new Note(id, title, text.toString()));
+        }
+    }
 
 }

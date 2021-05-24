@@ -1,11 +1,13 @@
 package ru.geekbrains.notes;
 
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Adapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     private Publisher publisher = new Publisher();
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
         // генерим несколько заметок для проверки
 //        if (savedInstanceState == null) {
-//            localRepository.fillList(3);
+//            localRepository.fillList(5);
 //        }
 
         initFields(savedInstanceState);
@@ -128,6 +131,12 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                 return true;
             case R.id.action_settings:
                 navigation.addFragment(settingsPlugFragment);
+                return true;
+            case R.id.action_trash:
+                Toast.makeText(MainActivity.this, "В разработке...", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_generate_notes:
+                localRepository.fillList(0);
                 return true;
             case R.id.action_about:
                 navigation.addFragment(new AboutFragment());
@@ -210,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         return localRepository;
     }
 
-    public void throwListView(NoteListAdapter adapter, RecyclerView recyclerView) {
+    public void throwRecyclerView(NoteListAdapter adapter, RecyclerView recyclerView) {
         localRepository.setAdapter(adapter, recyclerView);
     }
 }

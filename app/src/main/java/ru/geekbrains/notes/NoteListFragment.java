@@ -92,7 +92,7 @@ public class NoteListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         recyclerView.scrollToPosition(localRepository.getNoteListSize());
-        mainActivity.throwListView(adapter, recyclerView);
+        mainActivity.throwRecyclerView(adapter, recyclerView);
     }
 
 //    private void showPopupMenu(View view, int position) {
@@ -154,11 +154,11 @@ public class NoteListFragment extends Fragment {
         }
         if (item.getItemId() == R.id.action_delete_note) {
             localRepository.removeNote(adapter.getMenuPosition());
-            adapter.notifyItemRemoved(adapter.getMenuPosition());
+//            adapter.notifyItemRemoved(adapter.getMenuPosition());
         }
         if (item.getItemId() == R.id.action_clear) {
             localRepository.clear();
-            adapter.notifyDataSetChanged();
+//            adapter.notifyDataSetChanged();
         }
         return super.onContextItemSelected(item);
     }
