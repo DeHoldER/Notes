@@ -32,35 +32,32 @@ public class FirestoreNotesRepository {
     private final static String ID = "id";
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void getNoteList(Callback<List<Note>> callback) {
         FIRE_STORE.collection(NOTES_COLLECTION)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()) {
-                            ArrayList<Note> tmp = new ArrayList<>();
+                    if (task.isSuccessful()) {
+                        ArrayList<Note> tmp = new ArrayList<>();
 
-                            List<DocumentSnapshot> docs = task.getResult().getDocuments();
-                            for (DocumentSnapshot doc : docs) {
-                                String id = doc.getId();
-                                String title = doc.getString(TITLE);
-                                String text = doc.getString(TEXT);
-                                Date date = doc.getDate(CREATED_AT);
-                                int color = doc.getLong(COLOR).intValue();
+                        List<DocumentSnapshot> docs = task.getResult().getDocuments();
+                        for (DocumentSnapshot doc : docs) {
+                            String id = doc.getId();
+                            String title = doc.getString(TITLE);
+                            String text = doc.getString(TEXT);
+                            Date date = doc.getDate(CREATED_AT);
+                            int color = doc.getLong(COLOR).intValue();
 
-                                tmp.add(new Note(id, title, text, color, date));
-                            }
-
-                            tmp.sort(Comparator.comparing(Note::getDate));
-                            callback.onSuccess(tmp);
-
-
-                        } else {
-                            callback.onError(task.getException());
+                            tmp.add(new Note(id, title, text, color, date));
                         }
+
+                        tmp.sort(Comparator.comparing(Note::getDate));
+                        callback.onSuccess(tmp);
+
+
+                    } else {
+                        callback.onError(task.getException());
                     }
                 });
     }
@@ -76,35 +73,54 @@ public class FirestoreNotesRepository {
         data.put(ID, note.getId());
 
         FIRE_STORE.collection(NOTES_COLLECTION)
+                .add(data)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        note.setId(task.getResult().getId());
+                        callback.onSuccess(note);
+
+                    } else {
+                        callback.onError(task.getException());
+                    }
+                });
+    }
+
+    public void editNote(Note note, Callback<Note> callback) {
+
+        HashMap<String, Object> data = new HashMap<>();
+
+        data.put(TITLE, note.getTitle());
+        data.put(TEXT, note.getText());
+        data.put(CREATED_AT, note.getDate());
+        data.put(COLOR, note.getColor());
+        data.put(ID, note.getId());
+
+        FIRE_STORE.collection(NOTES_COLLECTION)
                 .document(note.getId())
                 .set(data)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            callback.onSuccess(note);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess(note);
 
-                        } else {
-                            callback.onError(task.getException());
-                        }
+                    } else {
+                        callback.onError(task.getException());
+                    }
+                });
+    }
+
+    public void removeNote(Note note, Callback<Note> callback) {
+
+        FIRE_STORE.collection(NOTES_COLLECTION)
+                .document(note.getId())
+                .delete()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess(note);
+                    } else {
+                        callback.onError(task.getException());
                     }
                 });
 
-
-//                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<DocumentReference> task) {
-//
-//                        if (task.isSuccessful()) {
-//                            note.setId(task.getResult().getId());
-//                            callback.onSuccess(note);
-//
-//                        } else {
-//                            callback.onError(task.getException());
-//                        }
-//
-//                    }
-//                });
     }
 
 
