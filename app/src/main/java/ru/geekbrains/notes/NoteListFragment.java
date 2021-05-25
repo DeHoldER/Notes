@@ -36,7 +36,7 @@ public class NoteListFragment extends Fragment {
         NoteListFragment fragment = new NoteListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ARG_EMAIL, email);
+        bundle.putString(ARG_EMAIL, email);
 
         fragment.setArguments(bundle);
         return fragment;
@@ -53,7 +53,7 @@ public class NoteListFragment extends Fragment {
         super.onAttach(context);
 
         if (getArguments() != null) {
-            email = (String) getArguments().getSerializable(ARG_EMAIL);
+            email = getArguments().getString(ARG_EMAIL);
         }
 
         if (context instanceof OnNoteClicked) {
