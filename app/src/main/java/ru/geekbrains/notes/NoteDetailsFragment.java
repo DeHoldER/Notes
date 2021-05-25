@@ -54,14 +54,26 @@ public class NoteDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialButton button = view.findViewById(R.id.button_edit_note);
+//        MaterialButton button = view.findViewById(R.id.button_edit_note);
         TextView idView = view.findViewById(R.id.textView_id);
         TextView titleView = view.findViewById(R.id.textView_title);
         TextView dateView = view.findViewById(R.id.textView_date);
         TextView textView = view.findViewById(R.id.textView_text);
         ImageView color = view.findViewById(R.id.note_details_color);
 
-        button.setOnClickListener(v -> {
+//        button.setOnClickListener(v -> {
+//            navigation.addFragment(EditNoteFragment.newInstance(note));
+//        });
+
+        titleView.setOnClickListener(v -> {
+            navigation.addFragment(EditNoteFragment.newInstance(note));
+        });
+
+        textView.setOnClickListener(v -> {
+            navigation.addFragment(EditNoteFragment.newInstance(note));
+        });
+
+        color.setOnClickListener(v -> {
             navigation.addFragment(EditNoteFragment.newInstance(note));
         });
 

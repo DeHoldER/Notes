@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void initLocalRepository() {
-        localRepository = new LocalNotesRepository();
+    public void initLocalRepository(String email) {
+        localRepository = new LocalNotesRepository(email);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

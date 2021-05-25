@@ -25,9 +25,9 @@ public class LocalNotesRepository {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public LocalNotesRepository() {
+    public LocalNotesRepository(String email) {
         NOTES = new ArrayList<>();
-        firestoreNotesRepository = new FirestoreNotesRepository();
+        firestoreNotesRepository = new FirestoreNotesRepository(email);
         syncList();
     }
 
@@ -44,7 +44,7 @@ public class LocalNotesRepository {
                 } else {
                     NOTES = value;
                     adapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(NOTES.size()-1);
+                    recyclerView.smoothScrollToPosition(NOTES.size());
                 }
             }
             @Override
@@ -65,7 +65,7 @@ public class LocalNotesRepository {
             public void onSuccess(Note value) {
                 NOTES.add(value);
 //                adapter.notifyItemInserted(NOTES.size());
-                recyclerView.smoothScrollToPosition(NOTES.size());
+//                recyclerView.smoothScrollToPosition(NOTES.size());
             }
             @Override
             public void onError(Throwable error) {
@@ -87,9 +87,7 @@ public class LocalNotesRepository {
                         newPosition = i;
                     }
                 }
-
                 NOTES.set(newPosition, note);
-
             }
             @Override
             public void onError(Throwable error) {

@@ -21,6 +21,8 @@ import ru.geekbrains.notes.repository.LocalNotesRepository;
 
 public class NoteListFragment extends Fragment {
 
+    private static final String ARG_EMAIL = "ARG_EMAIL";
+    private String email;
     private OnNoteClicked onNoteClicked;
     private NoteListAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -30,6 +32,18 @@ public class NoteListFragment extends Fragment {
     private Navigation navigation;
     private MainActivity mainActivity;
 
+    public static NoteListFragment newInstance(String email) {
+        NoteListFragment fragment = new NoteListFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ARG_EMAIL, email);
+
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+
+
     public interface OnNoteClicked {
         void onNoteClicked(Note note);
     }
@@ -38,6 +52,10 @@ public class NoteListFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
+        if (getArguments() != null) {
+            email = (String) getArguments().getSerializable(ARG_EMAIL);
+        }
+
         if (context instanceof OnNoteClicked) {
             onNoteClicked = (OnNoteClicked) context;
         }
@@ -45,7 +63,7 @@ public class NoteListFragment extends Fragment {
 
         publisher = mainActivity.getPublisher();
         navigation = mainActivity.getNavigation();
-        mainActivity.initLocalRepository();
+        mainActivity.initLocalRepository(email);
         localRepository = mainActivity.getLocalRepository();
     }
 
@@ -54,6 +72,7 @@ public class NoteListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.note_list_fragment, container, false);
         Context context = view.getContext();
+
 
 
         initView(view, context);

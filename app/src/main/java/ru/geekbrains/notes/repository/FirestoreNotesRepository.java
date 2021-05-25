@@ -22,9 +22,13 @@ import ru.geekbrains.notes.Note;
 
 public class FirestoreNotesRepository {
 
+    public FirestoreNotesRepository(String email) {
+        NOTES_COLLECTION = email;
+    }
+
     private final FirebaseFirestore FIRE_STORE = FirebaseFirestore.getInstance();
 
-    private final static String NOTES_COLLECTION = "notes";
+    private static String NOTES_COLLECTION = "notes";
     private final static String TITLE = "title";
     private final static String TEXT = "text";
     private final static String CREATED_AT = "createdAt";

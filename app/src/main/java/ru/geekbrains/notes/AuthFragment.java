@@ -84,7 +84,7 @@ public class AuthFragment extends Fragment {
         emailView = view.findViewById(R.id.email);
 // Кнопка «Продолжить», будем показывать главный фрагмент
         continue_ = view.findViewById(R.id.continue_);
-        continue_.setOnClickListener(v -> navigation.addFragment(new NoteListFragment(), false));
+        continue_.setOnClickListener(v -> navigation.addFragment(NoteListFragment.newInstance(emailView.getText().toString()), false));
     }
 
     @Override
