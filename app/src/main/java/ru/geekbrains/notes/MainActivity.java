@@ -3,7 +3,7 @@ package ru.geekbrains.notes;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.Adapter;
+import android.os.Handler;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 
 import ru.geekbrains.notes.repository.LocalNotesRepository;
-import ru.geekbrains.notes.repository.Mock;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
@@ -54,9 +53,17 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 //        }
 
         initFields(savedInstanceState);
-        loadList();
+//        loadList();
+        navigation.addFragment(new NoteListFragment(), false);
         initDrawer();
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        localRepository.syncList();
     }
 
     @Override
@@ -78,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -111,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             }
 
             if (item.getItemId() == R.id.action_sorting) {
+                localRepository.syncList();
                 Toast.makeText(MainActivity.this, "Sorting clicked", Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -144,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         }
         return false;
     }
-
+/*
     private void loadList() {
         noteListFragment = new NoteListFragment();
         fragmentContainer = fragmentManager.findFragmentById(R.id.fragment_container);
@@ -181,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             }
         }
     }
-
+*/
     @Override
     public void onNoteClicked(Note note) {
         lastOpenedNote = note;
@@ -222,8 +231,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     public void throwRecyclerView(NoteListAdapter adapter, RecyclerView recyclerView) {
         localRepository.setAdapter(adapter, recyclerView);
     }
-}
 
+}
 
 
 /*

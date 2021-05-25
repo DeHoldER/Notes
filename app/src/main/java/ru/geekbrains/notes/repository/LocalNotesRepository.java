@@ -27,12 +27,24 @@ public class LocalNotesRepository {
     public LocalNotesRepository() {
         NOTES = new ArrayList<>();
         firestoreNotesRepository = new FirestoreNotesRepository();
+        syncList();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void syncList() {
         firestoreNotesRepository.getNoteList(new Callback<List<Note>>() {
             @Override
             public void onSuccess(List<Note> value) {
-                NOTES = value;
-                adapter.notifyItemRangeInserted(0, NOTES.size());
-                recyclerView.smoothScrollToPosition(NOTES.size());
+                if (value.size() > NOTES.size()) {
+                    NOTES = value;
+//                adapter.notifyItemRangeInserted(0, NOTES.size());
+                    adapter.notifyItemInserted(NOTES.size());
+                    recyclerView.smoothScrollToPosition(NOTES.size());
+                } else {
+                    NOTES = value;
+                    adapter.notifyDataSetChanged();
+                    recyclerView.smoothScrollToPosition(NOTES.size()-1);
+                }
             }
             @Override
             public void onError(Throwable error) {

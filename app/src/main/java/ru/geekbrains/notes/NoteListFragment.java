@@ -93,6 +93,7 @@ public class NoteListFragment extends Fragment {
         super.onResume();
         recyclerView.scrollToPosition(localRepository.getNoteListSize());
         mainActivity.throwRecyclerView(adapter, recyclerView);
+        localRepository.syncList();
     }
 
 //    private void showPopupMenu(View view, int position) {
