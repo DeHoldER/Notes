@@ -34,11 +34,26 @@ public class NoteListFragment extends Fragment {
         void onNoteClicked(Note note);
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if (context instanceof OnNoteClicked) {
+            onNoteClicked = (OnNoteClicked) context;
+        }
+        mainActivity = (MainActivity) context;
+
+        publisher = mainActivity.getPublisher();
+        navigation = mainActivity.getNavigation();
+        localRepository = mainActivity.getLocalRepository();
+    }
+
     // При создании фрагмента укажем его макет
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.note_list_fragment, container, false);
         Context context = view.getContext();
+        mainActivity.initLocalRepository();
 
         initView(view, context);
 
@@ -61,23 +76,16 @@ public class NoteListFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//    }
-
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    public void onResume() {
+        super.onResume();
 
-        if (context instanceof OnNoteClicked) {
-            onNoteClicked = (OnNoteClicked) context;
+//        recyclerView.scrollToPosition(localRepository.getNoteListSize());
+
+        mainActivity.throwRecyclerView(adapter, recyclerView);
+        if (localRepository != null) {
+            localRepository.syncList();
         }
-        mainActivity = (MainActivity)context;
-
-        publisher = mainActivity.getPublisher();
-        navigation = mainActivity.getNavigation();
-        localRepository = mainActivity.getLocalRepository();
 
     }
 
@@ -88,13 +96,6 @@ public class NoteListFragment extends Fragment {
         super.onDetach();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        recyclerView.scrollToPosition(localRepository.getNoteListSize());
-        mainActivity.throwRecyclerView(adapter, recyclerView);
-        localRepository.syncList();
-    }
 
 //    private void showPopupMenu(View view, int position) {
 //        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
@@ -125,6 +126,7 @@ public class NoteListFragment extends Fragment {
         MenuInflater inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.popup_menu, menu);
     }
+
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
@@ -183,7 +185,7 @@ public class NoteListFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        MainActivity mainActivity = (MainActivity)context;
+        mainActivity = (MainActivity) context;
 //        mainActivity.throwListView(adapter, recyclerView);
     }
 }

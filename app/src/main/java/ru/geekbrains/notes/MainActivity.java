@@ -45,25 +45,27 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         setContentView(R.layout.activity_main);
 
         navigation = new Navigation(getSupportFragmentManager(), getResources());
-        localRepository = new LocalNotesRepository();
 
-        // генерим несколько заметок для проверки
-//        if (savedInstanceState == null) {
-//            localRepository.fillList(5);
-//        }
 
         initFields(savedInstanceState);
-//        loadList();
-        navigation.addFragment(new NoteListFragment(), false);
+//        navigation.addFragment(new NoteListFragment(), false);
+        navigation.addFragment(AuthFragment.newInstance(), false);
         initDrawer();
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void initLocalRepository() {
+        localRepository = new LocalNotesRepository();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onResume() {
         super.onResume();
-        localRepository.syncList();
+        if (localRepository != null) {
+            localRepository.syncList();
+        }
     }
 
     @Override
@@ -153,68 +155,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         }
         return false;
     }
-/*
-    private void loadList() {
-        noteListFragment = new NoteListFragment();
-        fragmentContainer = fragmentManager.findFragmentById(R.id.fragment_container);
 
-
-        if (!isLandscape) {
-            if (lastOpenedNote != null) {
-                if (fragmentContainer instanceof NoteDetailsFragment) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, noteListFragment)
-                            .commit();
-                }
-                fragmentManager.beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .replace(R.id.fragment_container, NoteDetailsFragment.newInstance(lastOpenedNote))
-                        .addToBackStack(null)
-                        .commit();
-            } else {
-                fragmentManager.beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .replace(R.id.fragment_container, noteListFragment)
-                        .commit();
-            }
-        } else {
-            if (lastOpenedNote != null) {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.list_container, noteListFragment)
-                        .replace(R.id.detail_container, NoteDetailsFragment.newInstance(lastOpenedNote))
-                        .commit();
-            } else {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.list_container, noteListFragment)
-                        .commit();
-            }
-        }
-    }
-*/
     @Override
     public void onNoteClicked(Note note) {
         lastOpenedNote = note;
         NoteDetailsFragment detailsFragment = NoteDetailsFragment.newInstance(note);
-//        addFragment(detailsFragment);
         navigation.addFragment(detailsFragment, true);
     }
-
-//    public void addFragment(Fragment fragment) {
-//        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
-//            fragmentManager.popBackStack();
-//        }
-//
-//        if (!isLandscape) {
-//            fragmentManager.beginTransaction()
-//                    .replace(R.id.fragment_container, fragment)
-//                    .addToBackStack(null)
-//                    .commit();
-//        } else {
-//            fragmentManager.beginTransaction()
-//                    .replace(R.id.detail_container, fragment)
-//                    .commit();
-//        }
-//    }
 
     public Navigation getNavigation() {
         return navigation;
