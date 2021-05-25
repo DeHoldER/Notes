@@ -70,7 +70,7 @@ public class FirestoreNotesRepository {
         data.put(TEXT, note.getText());
         data.put(CREATED_AT, note.getDate());
         data.put(COLOR, note.getColor());
-        data.put(ID, note.getId());
+//        data.put(ID, note.getId());
 
         FIRE_STORE.collection(NOTES_COLLECTION)
                 .add(data)

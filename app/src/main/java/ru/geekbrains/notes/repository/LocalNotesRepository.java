@@ -18,6 +18,7 @@ public class LocalNotesRepository {
     private NoteListAdapter adapter;
     private RecyclerView recyclerView;
 
+
     public void setAdapter(NoteListAdapter adapter, RecyclerView recyclerView) {
         this.adapter = adapter;
         this.recyclerView = recyclerView;
@@ -63,7 +64,7 @@ public class LocalNotesRepository {
             @Override
             public void onSuccess(Note value) {
                 NOTES.add(value);
-                adapter.notifyItemInserted(NOTES.size());
+//                adapter.notifyItemInserted(NOTES.size());
                 recyclerView.smoothScrollToPosition(NOTES.size());
             }
             @Override
@@ -78,7 +79,17 @@ public class LocalNotesRepository {
         firestoreNotesRepository.editNote(note, new Callback<Note>() {
             @Override
             public void onSuccess(Note value) {
-                NOTES.set(NOTES.indexOf(note), note);
+
+                int newPosition = 0;
+
+                for (int i = 0; i < NOTES.size(); i++) {
+                    if (NOTES.get(i).getId().equals(value.getId())) {
+                        newPosition = i;
+                    }
+                }
+
+                NOTES.set(newPosition, note);
+
             }
             @Override
             public void onError(Throwable error) {
@@ -117,10 +128,6 @@ public class LocalNotesRepository {
 
     public int getNoteListSize() {
         return NOTES.size();
-    }
-
-    public List<Note> getNoteList() {
-        return NOTES;
     }
 
 

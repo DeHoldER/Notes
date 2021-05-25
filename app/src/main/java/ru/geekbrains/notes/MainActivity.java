@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
             if (item.getItemId() == R.id.action_sorting) {
                 localRepository.syncList();
-                Toast.makeText(MainActivity.this, "Sorting clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Синхронизация завершена", Toast.LENGTH_SHORT).show();
                 return true;
             }
 
@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                 return true;
             case R.id.action_generate_notes:
                 localRepository.fillList(0);
+                localRepository.syncList();
                 return true;
             case R.id.action_about:
                 navigation.addFragment(new AboutFragment());

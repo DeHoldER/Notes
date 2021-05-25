@@ -45,6 +45,7 @@ public class NoteListFragment extends Fragment {
 
         publisher = mainActivity.getPublisher();
         navigation = mainActivity.getNavigation();
+        mainActivity.initLocalRepository();
         localRepository = mainActivity.getLocalRepository();
     }
 
@@ -53,7 +54,7 @@ public class NoteListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.note_list_fragment, container, false);
         Context context = view.getContext();
-        mainActivity.initLocalRepository();
+
 
         initView(view, context);
 

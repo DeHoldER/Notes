@@ -3,7 +3,7 @@
     <string name="category_ico">category_ico</string>
     <string name="new_note">Новая заметка</string>
     <string name="category">Category</string>
-    <string name="sorting">Sorting</string>
+    <string name="sorting">Синхронизация</string>
     <string name="search">Search</string>
     <string name="edit_note">Изменить</string>
     <string name="delete_note">Удалить</string>
