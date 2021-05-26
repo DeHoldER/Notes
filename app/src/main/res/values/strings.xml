@@ -24,4 +24,8 @@
     <string name="clear_all_notes">Удалить все</string>
     <string name="trash">Корзина</string>
     <string name="continue_">Продолжить</string>
+    <string name="alert_dialog">Внимание!</string>
+    <string name="alert_message">Вы действительно хотите удалить все заметки? \nПока корзина находится в разработке, восстановить их будет невозможно!</string>
+    <string name="alert_button_positive">Ok</string>
+    <string name="alert_button_negative">Отмена</string>
 </resources>

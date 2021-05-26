@@ -1,7 +1,9 @@
 package ru.geekbrains.notes;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -31,6 +33,7 @@ public class NoteListFragment extends Fragment {
     private Publisher publisher;
     private Navigation navigation;
     private MainActivity mainActivity;
+    private boolean alertDialogAnswer = false;
 
     public static NoteListFragment newInstance(String email) {
         NoteListFragment fragment = new NoteListFragment();
@@ -180,10 +183,30 @@ public class NoteListFragment extends Fragment {
 //            adapter.notifyItemRemoved(adapter.getMenuPosition());
         }
         if (item.getItemId() == R.id.action_clear) {
-            localRepository.clear();
-//            adapter.notifyDataSetChanged();
+            showAlertDialog();
         }
         return super.onContextItemSelected(item);
+    }
+
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+
+        builder.setTitle(R.string.alert_dialog)
+                .setMessage(R.string.alert_message)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(R.string.alert_button_positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        localRepository.clear();
+                    }
+                })
+                .setNegativeButton(R.string.alert_button_negative, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
     }
 
     private void showNoteDetails(Note note) {
