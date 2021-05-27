@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ru.geekbrains.notes.repository.NotesRepositoryImpl;
-import ru.geekbrains.notes.repository.RepositoryManager;
+import ru.geekbrains.notes.repository.LocalNotesRepository;
 
 public class EditNoteFragment extends Fragment {
 
@@ -41,7 +40,7 @@ public class EditNoteFragment extends Fragment {
     private TextView textView;
 
     private int colorSelected = Note.COLOR_WHITE;
-    private final RepositoryManager repositoryManager = new NotesRepositoryImpl();
+    private LocalNotesRepository localRepository;
     private Navigation navigation;
     private Publisher publisher;
 
@@ -68,8 +67,8 @@ public class EditNoteFragment extends Fragment {
             titleView.setText(note.getTitle());
             textView.setText(note.getText());
             colorSelected = note.getColor();
-            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
-        } else dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(new Date()));
+            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  HH:mm:ss").format(note.getDate()));
+        } else dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  HH:mm:ss").format(new Date()));
         initColors(view);
     }
 
@@ -79,6 +78,7 @@ public class EditNoteFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) context;
         navigation = mainActivity.getNavigation();
         publisher = mainActivity.getPublisher();
+        localRepository = mainActivity.getLocalRepository();
     }
 
     @Override
@@ -89,13 +89,13 @@ public class EditNoteFragment extends Fragment {
             note.setText(textView.getText().toString());
             note.setColor(colorSelected);
             note.setDate(new Date());
-            repositoryManager.editNote(note);
+            localRepository.editNote(note);
 //            publisher.notifySingle(note);
         } else {
             if (!textView.getText().toString().isEmpty()) {
-                String id = "id" + repositoryManager.getNoteListSize() + "1";
+                String id = "id" + (localRepository.getNoteListSize()+1);
                 Note note = new Note(id, titleView.getText().toString(), textView.getText().toString(), colorSelected);
-                repositoryManager.addNote(note);
+                localRepository.addNote(note);
 //                publisher.notifySingle(note);
             }
         }

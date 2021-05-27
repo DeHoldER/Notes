@@ -1,11 +1,13 @@
 package ru.geekbrains.notes;
 
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.os.Handler;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,10 +16,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 
-import ru.geekbrains.notes.repository.RepoMock;
+import ru.geekbrains.notes.repository.LocalNotesRepository;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
@@ -29,11 +32,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     private NoteListFragment noteListFragment;
     private Fragment fragmentContainer;
+
     private Navigation navigation;
+    private LocalNotesRepository localRepository;
 
     private Publisher publisher = new Publisher();
 
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,15 +46,26 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
         navigation = new Navigation(getSupportFragmentManager(), getResources());
 
-        // генерим несколько заметок для проверки
-        if (savedInstanceState == null) {
-            RepoMock.fillList(6);
-        }
 
         initFields(savedInstanceState);
-        loadList();
+//        navigation.addFragment(new NoteListFragment(), false);
+        navigation.addFragment(AuthFragment.newInstance(), false);
         initDrawer();
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void initLocalRepository(String email) {
+        localRepository = new LocalNotesRepository(email);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (localRepository != null) {
+            localRepository.syncList();
+        }
     }
 
     @Override
@@ -71,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -104,7 +121,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             }
 
             if (item.getItemId() == R.id.action_sorting) {
-                Toast.makeText(MainActivity.this, "Sorting clicked", Toast.LENGTH_SHORT).show();
+                localRepository.syncList();
+                Toast.makeText(MainActivity.this, "Синхронизация завершена", Toast.LENGTH_SHORT).show();
                 return true;
             }
 
@@ -125,6 +143,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             case R.id.action_settings:
                 navigation.addFragment(settingsPlugFragment);
                 return true;
+            case R.id.action_trash:
+                Toast.makeText(MainActivity.this, "В разработке...", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_generate_notes:
+                localRepository.fillList(0);
+                localRepository.syncList();
+                return true;
             case R.id.action_about:
                 navigation.addFragment(new AboutFragment());
                 return true;
@@ -132,67 +157,12 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         return false;
     }
 
-    private void loadList() {
-        noteListFragment = new NoteListFragment();
-        fragmentContainer = fragmentManager.findFragmentById(R.id.fragment_container);
-
-
-        if (!isLandscape) {
-            if (lastOpenedNote != null) {
-                if (fragmentContainer instanceof NoteDetailsFragment) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, noteListFragment)
-                            .commit();
-                }
-                fragmentManager.beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .replace(R.id.fragment_container, NoteDetailsFragment.newInstance(lastOpenedNote))
-                        .addToBackStack(null)
-                        .commit();
-            } else {
-                fragmentManager.beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .replace(R.id.fragment_container, noteListFragment)
-                        .commit();
-            }
-        } else {
-            if (lastOpenedNote != null) {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.list_container, noteListFragment)
-                        .replace(R.id.detail_container, NoteDetailsFragment.newInstance(lastOpenedNote))
-                        .commit();
-            } else {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.list_container, noteListFragment)
-                        .commit();
-            }
-        }
-    }
-
     @Override
     public void onNoteClicked(Note note) {
         lastOpenedNote = note;
         NoteDetailsFragment detailsFragment = NoteDetailsFragment.newInstance(note);
-//        addFragment(detailsFragment);
         navigation.addFragment(detailsFragment, true);
     }
-
-//    public void addFragment(Fragment fragment) {
-//        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
-//            fragmentManager.popBackStack();
-//        }
-//
-//        if (!isLandscape) {
-//            fragmentManager.beginTransaction()
-//                    .replace(R.id.fragment_container, fragment)
-//                    .addToBackStack(null)
-//                    .commit();
-//        } else {
-//            fragmentManager.beginTransaction()
-//                    .replace(R.id.detail_container, fragment)
-//                    .commit();
-//        }
-//    }
 
     public Navigation getNavigation() {
         return navigation;
@@ -201,8 +171,16 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     public Publisher getPublisher() {
         return publisher;
     }
-}
 
+    public LocalNotesRepository getLocalRepository() {
+        return localRepository;
+    }
+
+    public void throwRecyclerView(NoteListAdapter adapter, RecyclerView recyclerView) {
+        localRepository.setAdapter(adapter, recyclerView);
+    }
+
+}
 
 
 /*

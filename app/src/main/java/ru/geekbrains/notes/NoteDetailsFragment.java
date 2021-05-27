@@ -17,9 +17,6 @@ import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;
 
-import ru.geekbrains.notes.repository.NotesRepositoryImpl;
-import ru.geekbrains.notes.repository.RepositoryManager;
-
 public class NoteDetailsFragment extends Fragment {
 
     private static final String ARG_NOTE = "ARG_NOTE";
@@ -57,13 +54,26 @@ public class NoteDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialButton button = view.findViewById(R.id.button_edit_note);
+//        MaterialButton button = view.findViewById(R.id.button_edit_note);
+        TextView idView = view.findViewById(R.id.textView_id);
         TextView titleView = view.findViewById(R.id.textView_title);
         TextView dateView = view.findViewById(R.id.textView_date);
         TextView textView = view.findViewById(R.id.textView_text);
         ImageView color = view.findViewById(R.id.note_details_color);
 
-        button.setOnClickListener(v -> {
+//        button.setOnClickListener(v -> {
+//            navigation.addFragment(EditNoteFragment.newInstance(note));
+//        });
+
+        titleView.setOnClickListener(v -> {
+            navigation.addFragment(EditNoteFragment.newInstance(note));
+        });
+
+        textView.setOnClickListener(v -> {
+            navigation.addFragment(EditNoteFragment.newInstance(note));
+        });
+
+        color.setOnClickListener(v -> {
             navigation.addFragment(EditNoteFragment.newInstance(note));
         });
 
@@ -74,8 +84,9 @@ public class NoteDetailsFragment extends Fragment {
         if (note != null) {
             color.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(note.getColor()));
             titleView.setText(note.getTitle());
+            idView.setText(note.getId());
             textView.setText(note.getText());
-            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  hh:mm:ss").format(note.getDate()));
+            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  HH:mm:ss").format(note.getDate()));
         }
     }
 

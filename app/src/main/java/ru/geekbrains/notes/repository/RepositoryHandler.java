@@ -4,7 +4,7 @@ import java.util.List;
 
 import ru.geekbrains.notes.Note;
 
-public interface RepositoryManager {
+public interface RepositoryHandler {
 
     Note getNote(int position);
 
@@ -20,4 +20,7 @@ public interface RepositoryManager {
 
     List<Note> getNoteList();
 
+    void addNote(Callback<Note> callback);
+
+    void getNoteList(Callback<List<Note>> callback);
 }

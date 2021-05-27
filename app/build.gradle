@@ -33,9 +33,9 @@ android {
     signingConfigs {
         debug {
             storeFile file('./../key.jks')
-            storePassword '3216732167'
+            storePassword '1234567890'
             keyAlias 'alias'
-            keyPassword '3216732167'
+            keyPassword '1234567890'
         }
     }
 }
@@ -52,6 +52,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-firestore'
+
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.+'

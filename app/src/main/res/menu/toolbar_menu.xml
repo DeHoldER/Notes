@@ -9,7 +9,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/action_sorting"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@android:drawable/ic_popup_sync"
         android:orderInCategory="20"
         android:title="@string/sorting"
         app:showAsAction="ifRoom" />
