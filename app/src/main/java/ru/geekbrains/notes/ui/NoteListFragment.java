@@ -1,4 +1,4 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -19,11 +19,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ru.geekbrains.notes.MainActivity;
+import ru.geekbrains.notes.Navigation;
+import ru.geekbrains.notes.Note;
+import ru.geekbrains.notes.NoteListAdapter;
+import ru.geekbrains.notes.Publisher;
+import ru.geekbrains.notes.R;
 import ru.geekbrains.notes.repository.LocalNotesRepository;
 
 public class NoteListFragment extends Fragment {
 
     private static final String ARG_EMAIL = "ARG_EMAIL";
+    private static final String ARG_USERNAME = "ARG_USERNAME";
     private String email;
     private OnNoteClicked onNoteClicked;
     private NoteListAdapter adapter;
@@ -33,7 +40,6 @@ public class NoteListFragment extends Fragment {
     private Publisher publisher;
     private Navigation navigation;
     private MainActivity mainActivity;
-    private boolean alertDialogAnswer = false;
 
     public static NoteListFragment newInstance(String email) {
         NoteListFragment fragment = new NoteListFragment();
@@ -44,7 +50,6 @@ public class NoteListFragment extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
-
 
 
     public interface OnNoteClicked {
@@ -63,6 +68,7 @@ public class NoteListFragment extends Fragment {
             onNoteClicked = (OnNoteClicked) context;
         }
         mainActivity = (MainActivity) context;
+        mainActivity.initDrawer();
 
         publisher = mainActivity.getPublisher();
         navigation = mainActivity.getNavigation();
@@ -75,7 +81,6 @@ public class NoteListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.note_list_fragment, container, false);
         Context context = view.getContext();
-
 
 
         initView(view, context);

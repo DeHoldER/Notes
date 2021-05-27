@@ -1,12 +1,13 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes.ui;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+
+import ru.geekbrains.notes.R;
 
 public class AboutFragment extends Fragment {
 

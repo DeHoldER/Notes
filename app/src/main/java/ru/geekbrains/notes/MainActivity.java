@@ -3,7 +3,8 @@ package ru.geekbrains.notes;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,12 +16,16 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 
 import ru.geekbrains.notes.repository.LocalNotesRepository;
+import ru.geekbrains.notes.ui.AboutFragment;
+import ru.geekbrains.notes.ui.AuthFragment;
+import ru.geekbrains.notes.ui.EditNoteFragment;
+import ru.geekbrains.notes.ui.NoteDetailsFragment;
+import ru.geekbrains.notes.ui.NoteListFragment;
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
@@ -38,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     private Publisher publisher = new Publisher();
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    private String userName;
+    private String userEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +57,9 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         initFields(savedInstanceState);
 //        navigation.addFragment(new NoteListFragment(), false);
         navigation.addFragment(AuthFragment.newInstance(), false);
-        initDrawer();
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void initLocalRepository(String email) {
         localRepository = new LocalNotesRepository(email);
     }
@@ -87,8 +92,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void initDrawer() {
+    public void initDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -132,13 +136,26 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             }
             return false;
         });
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUserName = (TextView) headerView.findViewById(R.id.user_name);
+        TextView navUserEmail = (TextView) headerView.findViewById(R.id.user_account);
+
+        navUserName.setText(userName);
+        navUserEmail.setText(userEmail);
+    }
+
+
+    public void setUserOnMenu(String userName, String userEmail) {
+        this.userName = userName;
+        this.userEmail = userEmail;
     }
 
     private boolean navigateFragment(int id) {
-        NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("id1", "Settings", "Заглушка для настроек"));
+        NoteDetailsFragment settingsPlugFragment = NoteDetailsFragment.newInstance(new Note("", "Settings", "Заглушка для настроек"));
         switch (id) {
             case R.id.action_goto_note_list:
-                navigation.addFragment(noteListFragment, false);
+                navigation.addFragment(NoteListFragment.newInstance(userEmail), false);
                 return true;
             case R.id.action_settings:
                 navigation.addFragment(settingsPlugFragment);
@@ -184,13 +201,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
 
 /*
-
-0. Подумайте о функционале вашего приложения заметок. Какие экраны там могут быть, помимо
-основного со списком заметок? Как можно использовать меню и всплывающее меню в вашем
-приложении? Не обязательно сразу пытаться реализовать весь этот функционал, достаточно
-создать макеты и структуру, а реализацию пока заменить на заглушки или всплывающие
-уведомления (Toast). Используйте подход Single Activity для отображения экранов.
-
+Подумайте о функционале вашего приложения заметок.
 В качестве примера: на главном экране приложения у вас список всех заметок, при нажатии
 на заметку открывается экран с этой заметкой. В меню главного экрана у вас есть иконка
 поиска по заметкам и сортировка. В меню «Заметки» у вас есть иконки «Переслать» (или
@@ -198,12 +209,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
 1. Создайте список ваших заметок.
 2. Создайте карточку для элемента списка.
-3. Класс данных, созданный на шестом уроке, используйте для заполнения карточки списка.
-4. * Создайте фрагмент для редактирования данных в конкретной карточке. Этот фрагмент пока
-можно вызвать через основное меню.
-
 4. * Разберитесь, как можно сделать, и сделайте корректировку даты создания при помощи
 DatePicker.
-
  */
 

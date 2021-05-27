@@ -1,4 +1,4 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +20,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+
+import ru.geekbrains.notes.MainActivity;
+import ru.geekbrains.notes.Navigation;
+import ru.geekbrains.notes.R;
 
 public class AuthFragment extends Fragment {
 
@@ -36,6 +39,11 @@ public class AuthFragment extends Fragment {
     private TextView emailView;
     private MaterialButton continue_;
 
+
+    private MainActivity mainActivity;
+    private String userName;
+    private String userEmail;
+
     public static AuthFragment newInstance() {
         AuthFragment fragment = new AuthFragment();
         return fragment;
@@ -45,8 +53,8 @@ public class AuthFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 // Получим навигацию по приложению, чтобы перейти на фрагмент со списком карточек
-        MainActivity activity = (MainActivity) context;
-        navigation = activity.getNavigation();
+        mainActivity = (MainActivity) context;
+        navigation = mainActivity.getNavigation();
     }
 
     @Override
@@ -84,7 +92,8 @@ public class AuthFragment extends Fragment {
         emailView = view.findViewById(R.id.email);
 // Кнопка «Продолжить», будем показывать главный фрагмент
         continue_ = view.findViewById(R.id.continue_);
-        continue_.setOnClickListener(v -> navigation.addFragment(NoteListFragment.newInstance(emailView.getText().toString()), false));
+
+        continue_.setOnClickListener(v -> navigation.addFragment(NoteListFragment.newInstance(userEmail), false));
     }
 
     @Override
@@ -97,6 +106,9 @@ public class AuthFragment extends Fragment {
             disableSign();
 // Обновим почтовый адрес этого пользователя и выведем его на экран
             updateUI(account.getEmail());
+            userName = account.getDisplayName();
+            userEmail = account.getEmail();
+            mainActivity.setUserOnMenu(userName, userEmail);
         }
     }
 
@@ -122,6 +134,9 @@ public class AuthFragment extends Fragment {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            if (account == null) {
+                return;
+            }
 // Регистрация прошла успешно
             disableSign();
             updateUI(account.getEmail());

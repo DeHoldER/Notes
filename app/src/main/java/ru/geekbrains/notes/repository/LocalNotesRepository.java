@@ -31,7 +31,7 @@ public class LocalNotesRepository {
         syncList();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public void syncList() {
         firestoreNotesRepository.getNoteList(new Callback<List<Note>>() {
             @Override
@@ -40,6 +40,7 @@ public class LocalNotesRepository {
                     NOTES = value;
 //                adapter.notifyItemRangeInserted(0, NOTES.size());
                     adapter.notifyItemInserted(NOTES.size());
+//                    adapter.notifyDataSetChanged();
                     recyclerView.smoothScrollToPosition(NOTES.size());
                 } else {
                     NOTES = value;

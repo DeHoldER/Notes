@@ -1,23 +1,28 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ru.geekbrains.notes.ColorManager;
+import ru.geekbrains.notes.MainActivity;
+import ru.geekbrains.notes.Navigation;
+import ru.geekbrains.notes.Note;
+import ru.geekbrains.notes.Publisher;
+import ru.geekbrains.notes.R;
 import ru.geekbrains.notes.repository.LocalNotesRepository;
 
 public class EditNoteFragment extends Fragment {

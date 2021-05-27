@@ -1,4 +1,4 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -13,9 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.button.MaterialButton;
-
 import java.text.SimpleDateFormat;
+
+import ru.geekbrains.notes.ColorManager;
+import ru.geekbrains.notes.MainActivity;
+import ru.geekbrains.notes.Navigation;
+import ru.geekbrains.notes.Note;
+import ru.geekbrains.notes.R;
 
 public class NoteDetailsFragment extends Fragment {
 

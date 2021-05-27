@@ -1,16 +1,7 @@
 package ru.geekbrains.notes.repository;
 
-import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,7 +27,6 @@ public class FirestoreNotesRepository {
     private final static String ID = "id";
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void getNoteList(Callback<List<Note>> callback) {
         FIRE_STORE.collection(NOTES_COLLECTION)
                 .get()

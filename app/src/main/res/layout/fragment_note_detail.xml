@@ -8,7 +8,7 @@
     android:layout_marginStart="@dimen/note_detail_margin"
     android:layout_marginEnd="@dimen/note_detail_margin"
     android:orientation="vertical"
-    tools:context=".NoteDetailsFragment">
+    tools:context=".ui.NoteDetailsFragment">
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/textView_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
