@@ -2,6 +2,7 @@ package ru.geekbrains.notes.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,8 +28,7 @@ import ru.geekbrains.notes.R;
 
 public class AuthFragment extends Fragment {
 
-    // Используется, чтобы определить результат activity регистрации через
-// Google
+    // Используется, чтобы определить результат activity регистрации через Google
     private static final int RC_SIGN_IN = 40404;
     private static final String TAG = "GoogleAuth";
     private Navigation navigation;
@@ -93,7 +93,9 @@ public class AuthFragment extends Fragment {
 // Кнопка «Продолжить», будем показывать главный фрагмент
         continue_ = view.findViewById(R.id.continue_);
 
-        continue_.setOnClickListener(v -> navigation.addFragment(NoteListFragment.newInstance(userEmail), false));
+        continue_.setOnClickListener(v -> {
+            navigation.addFragment(NoteListFragment.newInstance(userEmail), false);
+        });
     }
 
     @Override
@@ -109,6 +111,11 @@ public class AuthFragment extends Fragment {
             userName = account.getDisplayName();
             userEmail = account.getEmail();
             mainActivity.setUserOnMenu(userName, userEmail);
+            SharedPreferences sharedPreferences = mainActivity.getSharedPreferences("auth", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor;
+            editor = sharedPreferences.edit();
+            editor.putString("userEmail", userEmail).apply();
+            editor.putString("userName", userName).apply();
         }
     }
 

@@ -1,5 +1,6 @@
 package ru.geekbrains.notes;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import ru.geekbrains.notes.ui.AuthFragment;
 import ru.geekbrains.notes.ui.EditNoteFragment;
 import ru.geekbrains.notes.ui.NoteDetailsFragment;
 import ru.geekbrains.notes.ui.NoteListFragment;
+
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
@@ -55,9 +57,20 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
 
         initFields(savedInstanceState);
-//        navigation.addFragment(new NoteListFragment(), false);
-        navigation.addFragment(AuthFragment.newInstance(), false);
 
+        if (isAuthorized(savedInstanceState)) {
+            navigation.addFragment(NoteListFragment.newInstance(userEmail), false);
+        } else navigation.addFragment(AuthFragment.newInstance(), false);
+
+    }
+
+    public boolean isAuthorized(Bundle savedInstanceState) {
+        SharedPreferences sharedPreferences = getSharedPreferences("auth", MODE_PRIVATE);
+        if (savedInstanceState == null) {
+            userEmail = sharedPreferences.getString("userEmail", "empty");
+            userName = sharedPreferences.getString("userName", "empty");
+            return !userEmail.equals("empty");
+        } else return false;
     }
 
     public void initLocalRepository(String email) {
@@ -143,8 +156,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
         navUserName.setText(userName);
         navUserEmail.setText(userEmail);
-    }
 
+    }
 
     public void setUserOnMenu(String userName, String userEmail) {
         this.userName = userName;
