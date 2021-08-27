@@ -23,7 +23,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import ru.geekbrains.notes.repository.LocalNotesRepository;
 import ru.geekbrains.notes.ui.AboutFragment;
-import ru.geekbrains.notes.ui.AuthFragment;
 import ru.geekbrains.notes.ui.EditNoteFragment;
 import ru.geekbrains.notes.ui.NoteDetailsFragment;
 import ru.geekbrains.notes.ui.NoteListFragment;
@@ -58,10 +57,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
         initFields(savedInstanceState);
 
-        if (isAuthorized(savedInstanceState)) {
-            navigation.addFragment(NoteListFragment.newInstance(userEmail), false);
-        } else navigation.addFragment(AuthFragment.newInstance(), false);
+// раскомментировать для авторизации через gmail
 
+//        if (isAuthorized(savedInstanceState)) {
+//            navigation.addFragment(NoteListFragment.newInstance(userEmail), false);
+//        } else navigation.addFragment(AuthFragment.newInstance(), false);
+
+        navigation.addFragment(NoteListFragment.newInstance("testEmail"), false);
     }
 
     public boolean isAuthorized(Bundle savedInstanceState) {
