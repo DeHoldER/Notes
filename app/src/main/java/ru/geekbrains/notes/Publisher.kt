@@ -1,28 +1,25 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList
 
-public class Publisher {
-
-    private List<Observer> observers;
-
-    public Publisher() {
-        observers = new ArrayList<>();
+class Publisher {
+    private val observers: MutableList<Observer>
+    fun subscribe(observer: Observer) {
+        observers.add(observer)
     }
 
-    public void subscribe(Observer observer) {
-        observers.add(observer);
+    fun unsubscribe(observer: Observer) {
+        observers.remove(observer)
     }
 
-    public void unsubscribe(Observer observer) {
-        observers.remove(observer);
-    }
-
-    public void notifySingle(Note note) {
-        for (Observer observer : observers) {
-            observer.updateNoteData(note);
-            unsubscribe(observer);
+    fun notifySingle(note: Note?) {
+        for (observer in observers) {
+            observer.updateNoteData(note)
+            unsubscribe(observer)
         }
+    }
+
+    init {
+        observers = ArrayList()
     }
 }

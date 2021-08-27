@@ -1,5 +1,5 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes
 
-public interface Observer {
-    void updateNoteData(Note note);
+interface Observer {
+    fun updateNoteData(note: Note?)
 }

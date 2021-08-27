@@ -1,26 +1,15 @@
-package ru.geekbrains.notes.repository;
+package ru.geekbrains.notes.repository
 
-import java.util.List;
+import ru.geekbrains.notes.Note
 
-import ru.geekbrains.notes.Note;
-
-public interface RepositoryHandler {
-
-    Note getNote(int position);
-
-    void addNote(Note note);
-
-    void editNote(Note note);
-
-    void removeNote(int position);
-
-    void clear();
-
-    int getNoteListSize();
-
-    List<Note> getNoteList();
-
-    void addNote(Callback<Note> callback);
-
-    void getNoteList(Callback<List<Note>> callback);
+interface RepositoryHandler {
+    fun getNote(position: Int): Note?
+    fun addNote(note: Note?)
+    fun editNote(note: Note?)
+    fun removeNote(position: Int)
+    fun clear()
+    val noteListSize: Int
+    val noteList: List<Note?>?
+    fun addNote(callback: Callback<Note?>?)
+    fun getNoteList(callback: Callback<List<Note?>?>?)
 }
