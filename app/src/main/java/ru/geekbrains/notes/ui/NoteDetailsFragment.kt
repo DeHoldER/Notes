@@ -1,97 +1,87 @@
-package ru.geekbrains.notes.ui;
+package ru.geekbrains.notes.ui
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import ru.geekbrains.notes.*
+import java.text.SimpleDateFormat
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import java.text.SimpleDateFormat;
-
-import ru.geekbrains.notes.ColorManager;
-import ru.geekbrains.notes.MainActivity;
-import ru.geekbrains.notes.Navigation;
-import ru.geekbrains.notes.Note;
-import ru.geekbrains.notes.R;
-
-public class NoteDetailsFragment extends Fragment {
-
-    private static final String ARG_NOTE = "ARG_NOTE";
-
-    private Navigation navigation;
-
-    private Resources resources;
-
-    Note note;
-
-    public static NoteDetailsFragment newInstance(Note note) {
-        NoteDetailsFragment fragment = new NoteDetailsFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_NOTE, note);
-
-        fragment.setArguments(bundle);
-        return fragment;
+class NoteDetailsFragment : Fragment() {
+    private var navigation: Navigation? = null
+    var note: Note? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val activity = context as MainActivity
+        navigation = activity.navigation
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        MainActivity activity = (MainActivity)context;
-        navigation = activity.getNavigation();
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_note_detail, container, false)
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_note_detail, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
 //        MaterialButton button = view.findViewById(R.id.button_edit_note);
-        TextView idView = view.findViewById(R.id.textView_id);
-        TextView titleView = view.findViewById(R.id.textView_title);
-        TextView dateView = view.findViewById(R.id.textView_date);
-        TextView textView = view.findViewById(R.id.textView_text);
-        ImageView color = view.findViewById(R.id.note_details_color);
+        val idView = view.findViewById<TextView>(R.id.textView_id)
+        val titleView = view.findViewById<TextView>(R.id.textView_title)
+        val dateView = view.findViewById<TextView>(R.id.textView_date)
+        val textView = view.findViewById<TextView>(R.id.textView_text)
+        val color = view.findViewById<ImageView>(R.id.note_details_color)
 
 //        button.setOnClickListener(v -> {
 //            navigation.addFragment(EditNoteFragment.newInstance(note));
 //        });
-
-        titleView.setOnClickListener(v -> {
-            navigation.addFragment(EditNoteFragment.newInstance(note));
-        });
-
-        textView.setOnClickListener(v -> {
-            navigation.addFragment(EditNoteFragment.newInstance(note));
-        });
-
-        color.setOnClickListener(v -> {
-            navigation.addFragment(EditNoteFragment.newInstance(note));
-        });
-
-        if (getArguments() != null) {
-            note = getArguments().getParcelable(ARG_NOTE);
+        titleView.setOnClickListener { v: View? ->
+            navigation?.addFragment(
+                EditNoteFragment.newInstance(
+                    note
+                )
+            )
         }
-
+        textView.setOnClickListener { v: View? ->
+            navigation?.addFragment(
+                EditNoteFragment.newInstance(
+                    note
+                )
+            )
+        }
+        color.setOnClickListener { v: View? ->
+            navigation?.addFragment(
+                EditNoteFragment.newInstance(
+                    note
+                )
+            )
+        }
+        if (arguments != null) {
+            note = requireArguments().getParcelable(ARG_NOTE)
+        }
         if (note != null) {
-            color.setImageResource(new ColorManager(getResources()).getColorIdFromResourcesArray(note.getColor()));
-            titleView.setText(note.getTitle());
-            idView.setText(note.getId());
-            textView.setText(note.getText());
-            dateView.setText(new SimpleDateFormat("dd.MM.yyyy  -  HH:mm:ss").format(note.getDate()));
+            color.setImageResource(ColorManager(resources).getColorIdFromResourcesArray(note!!.color))
+            titleView.text = note?.title
+            idView.text = note?.id
+            textView.text = note?.text
+            dateView.text = SimpleDateFormat("dd.MM.yyyy  -  HH:mm:ss").format(note!!.date)
         }
     }
 
+    companion object {
+        private const val ARG_NOTE = "ARG_NOTE"
+        fun newInstance(note: Note?): NoteDetailsFragment {
+            val fragment = NoteDetailsFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(ARG_NOTE, note)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 }

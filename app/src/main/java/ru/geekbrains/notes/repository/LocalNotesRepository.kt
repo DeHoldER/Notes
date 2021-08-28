@@ -1,163 +1,161 @@
-package ru.geekbrains.notes.repository;
+package ru.geekbrains.notes.repository
 
-import android.os.Build;
+import androidx.annotation.RequiresApi
+import android.os.Build
+import ru.geekbrains.notes.NoteListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import ru.geekbrains.notes.Note
+import java.lang.StringBuilder
+import java.util.ArrayList
 
-import androidx.annotation.RequiresApi;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import ru.geekbrains.notes.Note;
-import ru.geekbrains.notes.NoteListAdapter;
-
-public class LocalNotesRepository {
-
-    private List<Note> NOTES;
-    private final FirestoreNotesRepository firestoreNotesRepository;
-    private NoteListAdapter adapter;
-    private RecyclerView recyclerView;
-
-
-    public void setAdapter(NoteListAdapter adapter, RecyclerView recyclerView) {
-        this.adapter = adapter;
-        this.recyclerView = recyclerView;
+class LocalNotesRepository @RequiresApi(api = Build.VERSION_CODES.N) constructor(email: String?) {
+    private var NOTES: MutableList<Note>
+    private val firestoreNotesRepository: FirestoreNotesRepository
+    private var adapter: NoteListAdapter? = null
+    private var recyclerView: RecyclerView? = null
+    fun setAdapter(adapter: NoteListAdapter?, recyclerView: RecyclerView?) {
+        this.adapter = adapter
+        this.recyclerView = recyclerView
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public LocalNotesRepository(String email) {
-        NOTES = new ArrayList<>();
-        firestoreNotesRepository = new FirestoreNotesRepository(email);
-        syncList();
-    }
-
-
-    public void syncList() {
-        firestoreNotesRepository.getNoteList(new Callback<List<Note>>() {
-            @Override
-            public void onSuccess(List<Note> value) {
-                if (value.size() > NOTES.size()) {
-                    NOTES = value;
-//                adapter.notifyItemRangeInserted(0, NOTES.size());
-                    adapter.notifyItemInserted(NOTES.size());
-//                    adapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(NOTES.size());
+    fun syncList() {
+        firestoreNotesRepository.getNoteList(object : Callback<MutableList<Note>> {
+            override fun onSuccess(value: MutableList<Note>) {
+                if (value.size > NOTES.size) {
+                    NOTES = value
+                    //                adapter.notifyItemRangeInserted(0, NOTES.size());
+                    adapter!!.notifyItemInserted(NOTES.size)
+                    //                    adapter.notifyDataSetChanged();
+                    recyclerView!!.smoothScrollToPosition(NOTES.size)
                 } else {
-                    NOTES = value;
-                    adapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(NOTES.size());
+                    NOTES = value
+                    adapter!!.notifyDataSetChanged()
+                    recyclerView!!.smoothScrollToPosition(NOTES.size)
                 }
             }
-            @Override
-            public void onError(Throwable error) {
-                error.getCause();
+
+            override fun onError(error: Throwable?) {
+                error!!.cause
             }
-        });
+
+        })
     }
 
-    public Note getNote(int position) {
-        return NOTES.get(position);
+    fun getNote(position: Int): Note {
+        return NOTES[position]
     }
 
-
-    public void addNote(Note note) {
-        firestoreNotesRepository.addNote(note, new Callback<Note>() {
-            @Override
-            public void onSuccess(Note value) {
-                NOTES.add(value);
-//                adapter.notifyItemInserted(NOTES.size());
+    fun addNote(note: Note?) {
+        firestoreNotesRepository.addNote(note!!, object : Callback<Note> {
+            override fun onSuccess(value: Note) {
+                NOTES.add(value)
+                //                adapter.notifyItemInserted(NOTES.size());
 //                recyclerView.smoothScrollToPosition(NOTES.size());
             }
-            @Override
-            public void onError(Throwable error) {
-                error.getCause();
-            }
-        });
 
+            override fun onError(error: Throwable?) {
+                error!!.cause
+            }
+        })
     }
 
-    public void editNote(Note note) {
-        firestoreNotesRepository.editNote(note, new Callback<Note>() {
-            @Override
-            public void onSuccess(Note value) {
-
-                int newPosition = 0;
-
-                for (int i = 0; i < NOTES.size(); i++) {
-                    if (NOTES.get(i).getId().equals(value.getId())) {
-                        newPosition = i;
+    fun editNote(note: Note) {
+        firestoreNotesRepository.editNote(note, object : Callback<Note> {
+            override fun onSuccess(value: Note) {
+                var newPosition = 0
+                for (i in NOTES.indices) {
+                    if (NOTES[i].id == value.id) {
+                        newPosition = i
                     }
                 }
-                NOTES.set(newPosition, note);
+                NOTES[newPosition] = note
             }
-            @Override
-            public void onError(Throwable error) {
-                error.getCause();
+
+            override fun onError(error: Throwable?) {
+                error!!.cause
             }
-        });
+        })
     }
 
-    public void removeNote(int position) {
-        firestoreNotesRepository.removeNote(NOTES.get(position).getNote(), new Callback<Note>() {
-            @Override
-            public void onSuccess(Note value) {
-                NOTES.remove(position);
-                adapter.notifyItemRemoved(position);
+    fun removeNote(position: Int) {
+        firestoreNotesRepository.removeNote(NOTES[position].note, object : Callback<Note> {
+            override fun onSuccess(value: Note) {
+                NOTES.removeAt(position)
+                adapter!!.notifyItemRemoved(position)
             }
-            @Override
-            public void onError(Throwable error) {
-                error.getCause();
+
+            override fun onError(error: Throwable?) {
+                error!!.cause
             }
-        });
+        })
     }
 
-    public void clear() {
-        firestoreNotesRepository.clearRepository(NOTES, new Callback<Note>() {
-            @Override
-            public void onSuccess(Note value) {
-                NOTES.remove(value);
-                adapter.notifyItemRemoved(0);
+    fun clear() {
+        firestoreNotesRepository.clearRepository(NOTES, object : Callback<Note> {
+            override fun onSuccess(value: Note) {
+                NOTES.remove(value)
+                adapter!!.notifyItemRemoved(0)
             }
-            @Override
-            public void onError(Throwable error) {
-                error.getCause();
+
+            override fun onError(error: Throwable?) {
+                error!!.cause
             }
-        });
+        })
     }
 
-    public int getNoteListSize() {
-        return NOTES.size();
-    }
+    val noteListSize: Int
+        get() = NOTES.size
 
-
-    public void fillList(int numberOfAdditionallyGeneratedNotes) {
-
-        addNote(new Note("id1", "Заметка № 1",
+    fun fillList(numberOfAdditionallyGeneratedNotes: Int) {
+        addNote(
+            Note(
+                "id1", "Заметка № 1",
                 "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-                Note.COLOR_GREEN));
-        addNote(new Note("id2", "Заметка № 2",
+                Note.COLOR_GREEN
+            )
+        )
+        addNote(
+            Note(
+                "id2", "Заметка № 2",
                 "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-                Note.COLOR_GREEN));
-        addNote(new Note("id3", "Заметка № 3",
+                Note.COLOR_GREEN
+            )
+        )
+        addNote(
+            Note(
+                "id3", "Заметка № 3",
                 "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-                Note.COLOR_BLUE));
-        addNote(new Note("id4", "Заметка № 4",
+                Note.COLOR_BLUE
+            )
+        )
+        addNote(
+            Note(
+                "id4", "Заметка № 4",
                 "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-                Note.COLOR_YELLOW));
-        addNote(new Note("id5", "Заметка № 5",
+                Note.COLOR_YELLOW
+            )
+        )
+        addNote(
+            Note(
+                "id5", "Заметка № 5",
                 "Сделайте фрагмент добавления и редактирования данных, если вы ещё не сделали его. Сделайте навигацию между фрагментами, также организуйте обмен данными между фрагментами",
-                Note.COLOR_PURPLE));
-
-        for (int i = 6; i < numberOfAdditionallyGeneratedNotes+1; i++) {
-            String id = "id" + i;
-            String title = "Заметка № " + i;
-            StringBuilder text = new StringBuilder();
-
-            for (int j = 0; j < i; j++) {
-                text.append("Lorem ipsum ");
+                Note.COLOR_PURPLE
+            )
+        )
+        for (i in 6 until numberOfAdditionallyGeneratedNotes + 1) {
+            val id = "id$i"
+            val title = "Заметка № $i"
+            val text = StringBuilder()
+            for (j in 0 until i) {
+                text.append("Lorem ipsum ")
             }
-            addNote(new Note(id, title, text.toString()));
+            addNote(Note(id, title, text.toString()))
         }
     }
 
+    init {
+        NOTES = ArrayList()
+        firestoreNotesRepository = FirestoreNotesRepository(email!!)
+        syncList()
+    }
 }

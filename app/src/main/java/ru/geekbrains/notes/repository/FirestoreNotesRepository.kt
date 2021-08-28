@@ -11,7 +11,7 @@ import java.util.HashMap
 
 class FirestoreNotesRepository(email: String) {
     private val FIRE_STORE = FirebaseFirestore.getInstance()
-    fun getNoteList(callback: Callback<List<Note>?>) {
+    fun getNoteList(callback: Callback<MutableList<Note>>) {
         FIRE_STORE.collection(NOTES_COLLECTION)
             .get()
             .addOnCompleteListener { task: Task<QuerySnapshot> ->
@@ -34,7 +34,7 @@ class FirestoreNotesRepository(email: String) {
             }
     }
 
-    fun addNote(note: Note, callback: Callback<Note?>) {
+    fun addNote(note: Note, callback: Callback<Note>) {
         val data = HashMap<String, Any>()
         data[TITLE] = note.title
         data[TEXT] = note.text
@@ -53,7 +53,7 @@ class FirestoreNotesRepository(email: String) {
             }
     }
 
-    fun editNote(note: Note, callback: Callback<Note?>) {
+    fun editNote(note: Note, callback: Callback<Note>) {
         val data = HashMap<String, Any>()
         data[TITLE] = note.title
         data[TEXT] = note.text
@@ -72,7 +72,7 @@ class FirestoreNotesRepository(email: String) {
             }
     }
 
-    fun removeNote(note: Note, callback: Callback<Note?>) {
+    fun removeNote(note: Note, callback: Callback<Note>) {
         FIRE_STORE.collection(NOTES_COLLECTION)
             .document(note.id)
             .delete()
@@ -85,7 +85,7 @@ class FirestoreNotesRepository(email: String) {
             }
     }
 
-    fun clearRepository(noteList: List<Note>, callback: Callback<Note?>) {
+    fun clearRepository(noteList: List<Note>, callback: Callback<Note>) {
         for (note in noteList) {
             FIRE_STORE.collection(NOTES_COLLECTION)
                 .document(note.id)

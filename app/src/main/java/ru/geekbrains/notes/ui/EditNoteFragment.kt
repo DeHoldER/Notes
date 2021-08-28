@@ -63,7 +63,7 @@ class EditNoteFragment : Fragment() {
             note?.text = textView.text.toString()
             note?.color = colorSelected
             note?.date = Date()
-            localRepository.editNote(note)
+            note?.let { localRepository.editNote(it) }
         } else {
             if (textView.text.isNotEmpty()) {
                 val id = "id" + (localRepository.noteListSize + 1)
