@@ -1,29 +1,22 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes
 
-import android.content.res.Resources;
-import android.content.res.TypedArray;
+import android.content.res.Resources
 
-public class ColorManager {
-    Resources resources;
-
-    public ColorManager(Resources resources) {
-        this.resources = resources;
+class ColorManager(var resources: Resources) {
+    fun getColorIdFromResourcesArray(noteColorId: Int): Int {
+        val colors = imageArray
+        return colors[noteColorId]
     }
 
-
-    public int getColorIdFromResourcesArray(int noteColorId) {
-        int[] colors = getImageArray();
-        return colors[noteColorId];
-    }
-
-    private int[] getImageArray() {
-        TypedArray colors = resources.obtainTypedArray(R.array.note_colors);
-        int length = colors.length();
-        int[] answer = new int[length];
-        for (int i = 0; i < length; i++) {
-            answer[i] = colors.getResourceId(i, 0);
+    private val imageArray: IntArray
+        get() {
+            val colors = resources.obtainTypedArray(R.array.note_colors)
+            val length = colors.length()
+            val answer = IntArray(length)
+            for (i in 0 until length) {
+                answer[i] = colors.getResourceId(i, 0)
+            }
+            colors.recycle()
+            return answer
         }
-        colors.recycle();
-        return answer;
-    }
 }

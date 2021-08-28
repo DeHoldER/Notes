@@ -1,120 +1,98 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes
 
-import android.content.res.Resources;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.res.Resources
+import androidx.recyclerview.widget.RecyclerView
+import ru.geekbrains.notes.repository.LocalNotesRepository
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
+class NoteListAdapter(fragment: Fragment) : RecyclerView.Adapter<NoteListAdapter.ViewHolder>() {
+    private var resources: Resources? = null
+    private var itemClickListener // Слушатель будет устанавливаться извне
+            : OnItemClickListener? = null
+    var localRepository: LocalNotesRepository? = null
+    private val fragment: Fragment?
+    var menuPosition = 0
+        private set
 
-import ru.geekbrains.notes.repository.LocalNotesRepository;
-
-public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
-
-    private Resources resources;
-
-    private OnItemClickListener itemClickListener; // Слушатель будет устанавливаться извне
-
-    LocalNotesRepository localRepository;
-
-    private final Fragment fragment;
-
-    private int menuPosition;
-
-    public int getMenuPosition() {
-        return menuPosition;
+    fun setResources(resources: Resources?) {
+        this.resources = resources
     }
 
-    public NoteListAdapter(Fragment fragment) {
-        this.fragment = fragment;
-        MainActivity mainActivity = (MainActivity)fragment.getActivity();
-        if (mainActivity != null) {
-            localRepository = mainActivity.getLocalRepository();
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_list_item, parent, false)
+        )
     }
 
-    public void setResources(Resources resources) {
-        this.resources = resources;
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(localRepository!!.getNote(position))
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_item, parent, false));
+    override fun getItemCount(): Int {
+        return localRepository!!.noteListSize
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(localRepository.getNote(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return localRepository.getNoteListSize();
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-
-        private final TextView title;
-        private final TextView textPreview;
-        private final ImageView color;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            title = itemView.findViewById(R.id.item_note_title);
-            textPreview = itemView.findViewById(R.id.item_note_text_preview);
-            color = itemView.findViewById(R.id.item_note_color);
-
-            registerContextMenu(itemView);
-
-            // Обработчик нажатий на этом ViewHolder
-            itemView.setOnLongClickListener(v -> {
-                if (itemClickListener != null) {
-                    menuPosition = getLayoutPosition();
-                    itemClickListener.onItemLongClick(v, getAdapterPosition(), itemView);
-                }
-                return true;
-            });
-            itemView.setOnClickListener(v -> {
-                if (itemClickListener != null) {
-                    itemClickListener.onItemClick(v, getAdapterPosition());
-                }
-            });
-        }
-
-        private void registerContextMenu(@NonNull View itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val title: TextView = itemView.findViewById(R.id.item_note_title)
+        private val textPreview: TextView = itemView.findViewById(R.id.item_note_text_preview)
+        private val color: ImageView = itemView.findViewById(R.id.item_note_color)
+        private fun registerContextMenu(itemView: View) {
             if (fragment != null) {
-                itemView.setOnLongClickListener(v -> {
-                    menuPosition = getLayoutPosition();
-                    return false;
-                });
-                fragment.registerForContextMenu(itemView);
+                itemView.setOnLongClickListener { v: View? ->
+                    menuPosition = layoutPosition
+                    false
+                }
+                fragment.registerForContextMenu(itemView)
             }
         }
 
-        public void bind(Note note) {
-            ColorManager colorManager = new ColorManager(resources);
-            title.setText(note.getTitle());
-            textPreview.setText(note.getText());
-            color.setImageResource(colorManager.getColorIdFromResourcesArray(note.getColor()));
+        fun bind(note: Note) {
+            val colorManager = ColorManager(resources!!)
+            title.text = note.title
+            textPreview.text = note.text
+            color.setImageResource(colorManager.getColorIdFromResourcesArray(note.color))
         }
 
+        init {
+            registerContextMenu(itemView)
+
+            // Обработчик нажатий на этом ViewHolder
+            itemView.setOnLongClickListener { v: View? ->
+                if (itemClickListener != null) {
+                    menuPosition = layoutPosition
+                    itemClickListener!!.onItemLongClick(v, adapterPosition, itemView)
+                }
+                true
+            }
+            itemView.setOnClickListener { v: View? ->
+                if (itemClickListener != null) {
+                    itemClickListener!!.onItemClick(v, adapterPosition)
+                }
+            }
+        }
     }
 
     // Сеттер слушателя нажатий
-    public void SetOnItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    fun setOnItemClickListener(itemClickListener: OnItemClickListener?) {
+        this.itemClickListener = itemClickListener
     }
 
     // Интерфейс для обработки нажатий
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+    interface OnItemClickListener {
+        fun onItemClick(view: View?, position: Int)
+        fun onItemLongClick(v: View?, adapterPosition: Int, itemView: View?)
+    }
 
-        void onItemLongClick(View v, int adapterPosition, View itemView);
-
+    init {
+        this.fragment = fragment
+        val mainActivity = fragment.activity as MainActivity?
+        if (mainActivity != null) {
+            localRepository = mainActivity.localRepository
+        }
     }
 }

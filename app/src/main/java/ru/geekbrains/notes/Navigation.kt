@@ -1,54 +1,36 @@
-package ru.geekbrains.notes;
+package ru.geekbrains.notes
 
-import android.content.res.Resources;
-import android.view.SurfaceControl;
-import android.view.View;
+import android.content.res.Resources
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import kotlin.jvm.JvmOverloads
+import ru.geekbrains.notes.R
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-public class Navigation {
-
-    private final FragmentManager fragmentManager;
-    private final Resources resources;
-
-    public Navigation(FragmentManager fragmentManager, Resources resources) {
-        this.fragmentManager = fragmentManager;
-        this.resources = resources;
-    }
-
-    public void addFragment(Fragment fragment, int containerId, boolean addToBackStack) {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(containerId, fragment);
+class Navigation(private val fragmentManager: FragmentManager, private val resources: Resources) {
+    fun addFragment(fragment: Fragment?, containerId: Int, addToBackStack: Boolean) {
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(containerId, fragment!!)
         if (addToBackStack) {
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.addToBackStack(null)
         }
-        fragmentTransaction.commit();
+        fragmentTransaction.commit()
     }
 
-    public void addFragment(Fragment fragment, boolean addToBackStack) {
-        boolean isLandscape = resources.getBoolean(R.bool.isLandscape);
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
-            fragmentManager.popBackStack();
+    @JvmOverloads
+    fun addFragment(fragment: Fragment?, addToBackStack: Boolean = true) {
+        val isLandscape = resources.getBoolean(R.bool.isLandscape)
+        val transaction = fragmentManager.beginTransaction()
+        for (i in 0 until fragmentManager.backStackEntryCount) {
+            fragmentManager.popBackStack()
         }
-
         if (!isLandscape) {
-            transaction.replace(R.id.fragment_container, fragment);
+            transaction.replace(R.id.fragment_container, fragment!!)
             if (addToBackStack) {
-                transaction.addToBackStack(null);
+                transaction.addToBackStack(null)
             }
         } else {
-            transaction.replace(R.id.detail_container, fragment);
+            transaction.replace(R.id.detail_container, fragment!!)
         }
-        transaction.commit();
+        transaction.commit()
     }
-
-    public void addFragment(Fragment fragment) {
-        addFragment(fragment, true);
-    }
-
 }

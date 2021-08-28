@@ -86,7 +86,7 @@ public class NoteListFragment extends Fragment {
         initView(view, context);
 
         // Установим слушателя
-        adapter.SetOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
             @Override
             public void onItemLongClick(View v, int position, View itemView) {
 //                showPopupMenu(v, position);
