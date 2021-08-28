@@ -1,167 +1,125 @@
-package ru.geekbrains.notes.ui;
+package ru.geekbrains.notes.ui
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
+import ru.geekbrains.notes.ui.EditNoteFragment.Companion.newInstance
+import androidx.recyclerview.widget.LinearLayoutManager
+import ru.geekbrains.notes.repository.LocalNotesRepository
+import androidx.recyclerview.widget.RecyclerView
+import android.os.Bundle
+import android.os.Build
+import android.view.ContextMenu.ContextMenuInfo
+import android.view.*
+import androidx.fragment.app.Fragment
+import ru.geekbrains.notes.*
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class NoteListFragment : Fragment() {
+    private var email: String? = null
+    private var onNoteClicked: OnNoteClicked? = null
+    private var adapter: NoteListAdapter? = null
+    private var linearLayoutManager: LinearLayoutManager? = null
+    private var localRepository: LocalNotesRepository? = null
+    private var recyclerView: RecyclerView? = null
+    private var publisher: Publisher? = null
+    private var navigation: Navigation? = null
+    private var mainActivity: MainActivity? = null
 
-import ru.geekbrains.notes.MainActivity;
-import ru.geekbrains.notes.Navigation;
-import ru.geekbrains.notes.Note;
-import ru.geekbrains.notes.NoteListAdapter;
-import ru.geekbrains.notes.Publisher;
-import ru.geekbrains.notes.R;
-import ru.geekbrains.notes.repository.LocalNotesRepository;
-
-public class NoteListFragment extends Fragment {
-
-    private static final String ARG_EMAIL = "ARG_EMAIL";
-    private static final String ARG_USERNAME = "ARG_USERNAME";
-    private String email;
-    private OnNoteClicked onNoteClicked;
-    private NoteListAdapter adapter;
-    private LinearLayoutManager linearLayoutManager;
-    private LocalNotesRepository localRepository;
-    private RecyclerView recyclerView;
-    private Publisher publisher;
-    private Navigation navigation;
-    private MainActivity mainActivity;
-
-    public static NoteListFragment newInstance(String email) {
-        NoteListFragment fragment = new NoteListFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putString(ARG_EMAIL, email);
-
-        fragment.setArguments(bundle);
-        return fragment;
+    interface OnNoteClicked {
+        fun onNoteClicked(note: Note?)
     }
 
-
-    public interface OnNoteClicked {
-        void onNoteClicked(Note note);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        if (getArguments() != null) {
-            email = getArguments().getString(ARG_EMAIL);
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (arguments != null) {
+            email = requireArguments().getString(ARG_EMAIL)
         }
-
-        if (context instanceof OnNoteClicked) {
-            onNoteClicked = (OnNoteClicked) context;
+        if (context is OnNoteClicked) {
+            onNoteClicked = context
         }
-        mainActivity = (MainActivity) context;
-        mainActivity.initDrawer();
-
-        publisher = mainActivity.getPublisher();
-        navigation = mainActivity.getNavigation();
-        mainActivity.initLocalRepository(email);
-        localRepository = mainActivity.getLocalRepository();
+        mainActivity = context as MainActivity
+        mainActivity!!.initDrawer()
+        publisher = mainActivity!!.publisher
+        navigation = mainActivity!!.navigation
+        mainActivity!!.initLocalRepository(email)
+        localRepository = mainActivity!!.localRepository
     }
 
     // При создании фрагмента укажем его макет
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.note_list_fragment, container, false);
-        Context context = view.getContext();
-
-
-        initView(view, context);
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.note_list_fragment, container, false)
+        val context = view.context
+        initView(view, context)
 
         // Установим слушателя
-        adapter.setOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemLongClick(View v, int position, View itemView) {
+        adapter!!.setOnItemClickListener(object : NoteListAdapter.OnItemClickListener {
+            override fun onItemLongClick(v: View?, position: Int, itemView: View?) {
 //                showPopupMenu(v, position);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    itemView.showContextMenu(5, 10);
+                    itemView!!.showContextMenu(5f, 10f)
                 }
             }
 
-            @Override
-            public void onItemClick(View view, int position) {
-                showNoteDetails(localRepository.getNote(position));
+            override fun onItemClick(view: View?, position: Int) {
+                showNoteDetails(localRepository!!.getNote(position))
             }
-
-        });
-        return view;
+        })
+        return view
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    override fun onResume() {
+        super.onResume()
 
 //        recyclerView.scrollToPosition(localRepository.getNoteListSize());
-
-        mainActivity.throwRecyclerView(adapter, recyclerView);
+        mainActivity!!.throwRecyclerView(adapter, recyclerView)
         if (localRepository != null) {
-            localRepository.syncList();
+            localRepository!!.syncList()
         }
-
     }
 
-    @Override
-    public void onDetach() {
-        onNoteClicked = null;
-        publisher = null;
-        super.onDetach();
+    override fun onDetach() {
+        onNoteClicked = null
+        publisher = null
+        super.onDetach()
     }
 
-
-//    private void showPopupMenu(View view, int position) {
-//        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-//        requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
-//
-//        popupMenu.setOnMenuItemClickListener(item -> {
-//            if (item.getItemId() == R.id.action_edit_note) {
-////                localRepository.editNote(position);
-//                linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
-//                Toast.makeText(requireContext(), "Do something with " + repositoryManager.getNote(position).getTitle(), Toast.LENGTH_SHORT).show();
-//            }
-//            if (item.getItemId() == R.id.action_delete_note) {
-//                repositoryManager.removeNote(position);
-//                adapter.notifyItemRemoved(position);
-//            }
-//            if (item.getItemId() == R.id.action_clear) {
-//                repositoryManager.clear();
-//                adapter.notifyDataSetChanged();
-//            }
-//            return true;
-//        });
-//        popupMenu.show();
-//    }
-
-    @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = requireActivity().getMenuInflater();
-        inflater.inflate(R.menu.popup_menu, menu);
+    //    private void showPopupMenu(View view, int position) {
+    //        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+    //        requireActivity().getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+    //
+    //        popupMenu.setOnMenuItemClickListener(item -> {
+    //            if (item.getItemId() == R.id.action_edit_note) {
+    ////                localRepository.editNote(position);
+    //                linearLayoutManager.scrollToPosition(repositoryManager.getNoteListSize());
+    //                Toast.makeText(requireContext(), "Do something with " + repositoryManager.getNote(position).getTitle(), Toast.LENGTH_SHORT).show();
+    //            }
+    //            if (item.getItemId() == R.id.action_delete_note) {
+    //                repositoryManager.removeNote(position);
+    //                adapter.notifyItemRemoved(position);
+    //            }
+    //            if (item.getItemId() == R.id.action_clear) {
+    //                repositoryManager.clear();
+    //                adapter.notifyDataSetChanged();
+    //            }
+    //            return true;
+    //        });
+    //        popupMenu.show();
+    //    }
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater = requireActivity().menuInflater
+        inflater.inflate(R.menu.popup_menu, menu)
     }
 
     @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        final int position = adapter.getMenuPosition();
-        if (item.getItemId() == R.id.action_edit_note) {
-
-            navigation.addFragment(EditNoteFragment.newInstance(localRepository.getNote(position)));
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val position = adapter!!.menuPosition
+        if (item.itemId == R.id.action_edit_note) {
+            navigation!!.addFragment(newInstance(localRepository!!.getNote(position)))
 
 
 //            publisher.subscribe(new Observer() {
@@ -180,60 +138,56 @@ public class NoteListFragment extends Fragment {
 //                    recyclerView.smoothScrollToPosition(repositoryManager.getNoteListSize() - 1);
 //                }
 //            });
-
-            linearLayoutManager.scrollToPosition(localRepository.getNoteListSize());
+            linearLayoutManager!!.scrollToPosition(localRepository!!.noteListSize)
         }
-        if (item.getItemId() == R.id.action_delete_note) {
-            localRepository.removeNote(adapter.getMenuPosition());
-//            adapter.notifyItemRemoved(adapter.getMenuPosition());
+        if (item.itemId == R.id.action_delete_note) {
+            localRepository?.removeNote(adapter!!.menuPosition)
+            //            adapter.notifyItemRemoved(adapter.getMenuPosition());
         }
-        if (item.getItemId() == R.id.action_clear) {
-            showAlertDialog();
+        if (item.itemId == R.id.action_clear) {
+            showAlertDialog()
         }
-        return super.onContextItemSelected(item);
+        return super.onContextItemSelected(item)
     }
 
-
-    private void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-
+    private fun showAlertDialog() {
+        val builder = AlertDialog.Builder(mainActivity)
         builder.setTitle(R.string.alert_dialog)
-                .setMessage(R.string.alert_message)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(R.string.alert_button_positive, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        localRepository.clear();
-                    }
-                })
-                .setNegativeButton(R.string.alert_button_negative, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
+            .setMessage(R.string.alert_message)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setPositiveButton(R.string.alert_button_positive) { dialog, which -> localRepository!!.clear() }
+            .setNegativeButton(R.string.alert_button_negative) { dialog, which -> }.show()
     }
 
-    private void showNoteDetails(Note note) {
+    private fun showNoteDetails(note: Note) {
         if (onNoteClicked != null) {
-            onNoteClicked.onNoteClicked(note);
+            onNoteClicked!!.onNoteClicked(note)
         }
     }
 
-    private void initView(View view, Context context) {
-        linearLayoutManager = new LinearLayoutManager(context);
-        linearLayoutManager.setStackFromEnd(true);
-        linearLayoutManager.setReverseLayout(true);
+    private fun initView(view: View, context: Context) {
+        linearLayoutManager = LinearLayoutManager(context)
+        linearLayoutManager?.stackFromEnd = true
+        linearLayoutManager?.reverseLayout = true
+        adapter = NoteListAdapter(this)
+        adapter?.setResources(resources)
+        adapter?.notifyDataSetChanged()
+        recyclerView = view as RecyclerView
+        recyclerView?.layoutManager = linearLayoutManager
+        recyclerView?.adapter = adapter
+        mainActivity = context as MainActivity
+    }
 
-        adapter = new NoteListAdapter(this);
-        adapter.setResources(getResources());
-        adapter.notifyDataSetChanged();
-
-        recyclerView = (RecyclerView) view;
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(adapter);
-
-        mainActivity = (MainActivity) context;
-//        mainActivity.throwListView(adapter, recyclerView);
+    companion object {
+        private const val ARG_EMAIL = "ARG_EMAIL"
+        private const val ARG_USERNAME = "ARG_USERNAME"
+        @JvmStatic
+        fun newInstance(email: String?): NoteListFragment {
+            val fragment = NoteListFragment()
+            val bundle = Bundle()
+            bundle.putString(ARG_EMAIL, email)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

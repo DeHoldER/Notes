@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity(), OnNoteClicked {
         return false
     }
 
-    override fun onNoteClicked(note: Note) {
+    override fun onNoteClicked(note: Note?) {
         lastOpenedNote = note
         val detailsFragment = NoteDetailsFragment.newInstance(note)
         navigation.addFragment(detailsFragment, true)
