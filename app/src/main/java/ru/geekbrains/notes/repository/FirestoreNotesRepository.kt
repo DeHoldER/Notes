@@ -17,14 +17,16 @@ class FirestoreNotesRepository(email: String) {
             .addOnCompleteListener { task: Task<QuerySnapshot> ->
                 if (task.isSuccessful) {
                     val tmp = ArrayList<Note>()
-                    val docs = task.result!!.documents
-                    for (doc in docs) {
-                        val id = doc.id
-                        val title = doc.getString(TITLE)
-                        val text = doc.getString(TEXT)
-                        val date = doc.getDate(CREATED_AT)
-                        val color = doc.getLong(COLOR)!!.toInt()
-                        tmp.add(Note(id, title, text, color, date))
+                    val docs = task.result?.documents
+                    if (docs != null) {
+                        for (doc in docs) {
+                            val id = doc.id
+                            val title = doc.getString(TITLE)
+                            val text = doc.getString(TEXT)
+                            val date = doc.getDate(CREATED_AT)
+                            val color = doc.getLong(COLOR)!!.toInt()
+                            tmp.add(Note(id, title.toString(), text.toString(), color, date!!))
+                        }
                     }
                     tmp.sortWith(Comparator.comparing { obj: Note -> obj.date })
                     callback.onSuccess(tmp)

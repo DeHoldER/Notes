@@ -38,11 +38,11 @@ class NoteListFragment : Fragment() {
             onNoteClicked = context
         }
         mainActivity = context as MainActivity
-        mainActivity!!.initDrawer()
-        publisher = mainActivity!!.publisher
-        navigation = mainActivity!!.navigation
+        mainActivity?.initDrawer()
+        publisher = mainActivity?.publisher
+        navigation = mainActivity?.navigation
         mainActivity!!.initLocalRepository(email)
-        localRepository = mainActivity!!.localRepository
+        localRepository = mainActivity?.localRepository
     }
 
     // При создании фрагмента укажем его макет
@@ -56,11 +56,11 @@ class NoteListFragment : Fragment() {
         initView(view, context)
 
         // Установим слушателя
-        adapter!!.setOnItemClickListener(object : NoteListAdapter.OnItemClickListener {
+        adapter?.setOnItemClickListener(object : NoteListAdapter.OnItemClickListener {
             override fun onItemLongClick(v: View?, position: Int, itemView: View?) {
 //                showPopupMenu(v, position);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    itemView!!.showContextMenu(5f, 10f)
+                    itemView?.showContextMenu(5f, 10f)
                 }
             }
 
@@ -75,7 +75,7 @@ class NoteListFragment : Fragment() {
         super.onResume()
 
 //        recyclerView.scrollToPosition(localRepository.getNoteListSize());
-        mainActivity!!.throwRecyclerView(adapter, recyclerView)
+        mainActivity?.throwRecyclerView(adapter, recyclerView)
         if (localRepository != null) {
             localRepository!!.syncList()
         }
@@ -181,6 +181,7 @@ class NoteListFragment : Fragment() {
     companion object {
         private const val ARG_EMAIL = "ARG_EMAIL"
         private const val ARG_USERNAME = "ARG_USERNAME"
+
         @JvmStatic
         fun newInstance(email: String?): NoteListFragment {
             val fragment = NoteListFragment()
