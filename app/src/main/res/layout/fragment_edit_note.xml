@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".NoteDetailsFragment">
+        tools:context=".ui.NoteDetailsFragment">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editText_title"
